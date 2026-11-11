@@ -2,150 +2,299 @@
 import { db } from "./firebase.js";
 
 import {
+  collection,
   doc,
   setDoc,
-  collection,
   addDoc,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
 
-const serviceLinks = document.querySelectorAll("[data-service]");
-const serviceSelect = document.getElementById("service");
+const services = [
+  {
+    name: "Social Media Posts",
+    price: 99,
+    icon: "📱",
+    description: "Creative Instagram and social media designs."
+  },
+  {
+    name: "Banners & Posters",
+    price: 199,
+    icon: "🎨",
+    description: "Professional promotional banners and posters."
+  },
+  {
+    name: "YouTube Thumbnails",
+    price: 149,
+    icon: "▶️",
+    description: "Eye-catching YouTube thumbnail designs."
+  },
+  {
+    name: "Resume Maker",
+    price: 149,
+    icon: "📄",
+    description: "Clean and professional resume designs."
+  },
+  {
+    name: "QR Code Maker",
+    price: 49,
+    icon: "▦",
+    description: "Custom QR code designs for your business."
+  },
+  {
+    name: "Digital Visiting Card",
+    price: 99,
+    icon: "💳",
+    description: "Modern digital business cards."
+  },
+  {
+    name: "Invoice Maker",
+    price: 99,
+    icon: "🧾",
+    description: "Professional invoice designs."
+  },
+  {
+    name: "Website Design",
+    price: 999,
+    icon: "💻",
+    description: "Modern responsive website designs."
+  }
+];
+
+const demoStyles = [
+  "Modern Minimal",
+  "Luxury Premium",
+  "Bold Creative",
+  "Neon Glow",
+  "Elegant Classic",
+  "Business Professional"
+];
+
+const serviceGrid = document.getElementById("serviceGrid");
+const demoModal = document.getElementById("demoModal");
+const demoGrid = document.getElementById("demoGrid");
+const modalTitle = document.getElementById("modalTitle");
+const modalPrice = document.getElementById("modalPrice");
+const modalContinue = document.getElementById("modalContinue");
+const closeModal = document.getElementById("closeModal");
+
 const orderForm = document.getElementById("orderForm");
+const serviceSelect = document.getElementById("service");
+const demoStyleInput = document.getElementById("demoStyle");
+const customerInput = document.getElementById("customer");
+const emailInput = document.getElementById("email");
+const detailsInput = document.getElementById("details");
 const formMessage = document.getElementById("formMessage");
 
 const paymentSection = document.getElementById("paymentSection");
 const paymentAmount = document.getElementById("paymentAmount");
-const orderIdDisplay = document.getElementById("orderIdDisplay");
-const transactionIdInput = document.getElementById("transactionId");
+const orderReference = document.getElementById("orderReference");
+const transactionId = document.getElementById("transactionId");
 const submitPayment = document.getElementById("submitPayment");
-const paymentMessage = document.getElementById("paymentMessage");
+const copyUpi = document.getElementById("copyUpi");
 
-let currentOrderId = null;
+const UPI_ID = "YOUR_UPI_ID_HERE";
 
-// Service prices
-const prices = {
-  "Social Media Posts": 99,
-  "Banners & Posters": 199,
-  "YouTube Thumbnails": 149,
-  "Resume Maker": 149,
-  "QR Code Maker": 49,
-  "Digital Visiting Card": 99,
-  "Invoice Maker": 99,
-  "Website Design": 999
-};
+let selectedService = null;
+let selectedStyle = "";
+let currentOrderId = "";
 
-// Select service from service cards
-serviceLinks.forEach((link) => {
-  link.addEventListener("click", () => {
-    serviceSelect.value = link.dataset.service;
+function createId() {
+  return "QS" + Date.now().toString().slice(-8);
+}
+
+function renderServices() {
+  if (!serviceGrid) return;
+
+  serviceGrid.innerHTML = services.map((service, index) => `
+    <article class="service-card">
+      <div class="service-icon">${service.icon}</div>
+      <h3>${service.name}</h3>
+      <p>${service.description}</p>
+      <button type="button" data-index="${index}">
+        View 6 demos →
+      </button>
+      <strong>₹${service.price}</strong>
+    </article>
+  `).join("");
+
+  serviceGrid.querySelectorAll("button").forEach(button => {
+    button.addEventListener("click", () => {
+      openDemos(Number(button.dataset.index));
+    });
+  });
+}
+
+function openDemos(index) {
+  selectedService = services[index];
+  selectedStyle = "";
+
+  modalTitle.textContent = selectedService.name + " — Choose Your Style";
+  modalPrice.textContent = "₹" + selectedService.price;
+
+  demoGrid.innerHTML = demoStyles.map((style, i) => `
+    <button type="button" class="demo-card" data-style="${style}">
+      <div class="demo-art" style="background:
+        ${[
+          "linear-gradient(135deg,#253b80,#11152e)",
+          "linear-gradient(135deg,#8b5cf6,#24103f)",
+          "linear-gradient(135deg,#f97316,#401329)",
+          "linear-gradient(135deg,#06b6d4,#171047)",
+          "linear-gradient(135deg,#a16207,#292019)",
+          "linear-gradient(135deg,#166534,#101d2c)"
+        ][i]}">
+        <div class="art-copy">
+          <small>QUICKSERVE DESIGN</small>
+          ${style}
+        </div>
+      </div>
+      <span class="demo-name">${i + 1}. ${style}</span>
+    </button>
+  `).join("");
+
+  demoGrid.querySelectorAll(".demo-card").forEach(card => {
+    card.addEventListener("click", () => {
+      demoGrid.querySelectorAll(".demo-card").forEach(item => {
+        item.classList.remove("selected");
+      });
+
+      card.classList.add("selected");
+      selectedStyle = card.dataset.style;
+    });
+  });
+
+  demoModal.classList.add("open");
+}
+
+closeModal?.addEventListener("click", () => {
+  demoModal.classList.remove("open");
+});
+
+demoModal?.addEventListener("click", event => {
+  if (event.target === demoModal) {
+    demoModal.classList.remove("open");
+  }
+});
+
+modalContinue?.addEventListener("click", () => {
+  if (!selectedService || !selectedStyle) {
+    alert("Please select a design style first.");
+    return;
+  }
+
+  serviceSelect.value = selectedService.name;
+  demoStyleInput.value = selectedStyle;
+
+  demoModal.classList.remove("open");
+
+  document.getElementById("checkout")?.scrollIntoView({
+    behavior: "smooth"
   });
 });
 
-// Generate order ID
-function generateOrderId() {
-  return "QS" + Date.now().toString().slice(-9) +
-    Math.floor(100 + Math.random() * 900);
-}
-
-// Create order
-orderForm.addEventListener("submit", async (event) => {
+orderForm?.addEventListener("submit", async event => {
   event.preventDefault();
 
-  const service = serviceSelect.value;
-  const customer = document.getElementById("customer").value.trim();
-  const email = document.getElementById("email").value.trim();
-  const details = document.getElementById("details").value.trim();
-
-  if (!service || !customer || !email || !details) {
-    formMessage.textContent = "Please complete all fields.";
+  if (!selectedService || !selectedStyle) {
+    formMessage.textContent = "Please choose a service and design demo first.";
     return;
   }
 
-  const amount = prices[service];
+  const customer = customerInput.value.trim();
+  const email = emailInput.value.trim();
+  const details = detailsInput.value.trim();
 
-  if (!amount) {
-    formMessage.textContent = "Please select a valid service.";
+  if (!customer || !email || !details) {
+    formMessage.textContent = "Please complete all required fields.";
     return;
   }
 
-  const button = orderForm.querySelector('button[type="submit"]');
-  button.disabled = true;
-  formMessage.textContent = "Creating your order...";
+  currentOrderId = createId();
 
-  const orderId = generateOrderId();
+  const order = {
+    orderId: currentOrderId,
+    service: selectedService.name,
+    style: selectedStyle,
+    customer,
+    email,
+    details,
+    amount: selectedService.price,
+    paymentStatus: "pending",
+    createdAt: serverTimestamp()
+  };
+
+  const submitButton = orderForm.querySelector('button[type="submit"]');
+  submitButton.disabled = true;
+  submitButton.textContent = "Creating order...";
 
   try {
-    await setDoc(doc(db, "orders", orderId), {
-      orderId,
-      service,
-      customer,
-      email,
-      details,
-      amount,
-      paymentStatus: "pending",
-      createdAt: serverTimestamp()
-    });
+    await setDoc(doc(db, "orders", currentOrderId), order);
 
-    currentOrderId = orderId;
+    paymentAmount.textContent = "₹" + selectedService.price;
+    orderReference.textContent = "Order ID: " + currentOrderId;
 
-    paymentAmount.textContent = `Amount to pay: ₹${amount}`;
-    orderIdDisplay.textContent = `Order ID: ${orderId}`;
-
-    formMessage.textContent = "Order created successfully!";
     paymentSection.hidden = false;
+    formMessage.textContent =
+      "Order created. Complete payment and submit your transaction reference.";
 
-    paymentSection.scrollIntoView({
-      behavior: "smooth",
-      block: "center"
-    });
-
-    button.textContent = "Order Created";
+    paymentSection.scrollIntoView({ behavior: "smooth" });
 
   } catch (error) {
-    console.error("Order error:", error);
+    console.error(error);
     formMessage.textContent =
-      "Could not create order. Please try again.";
-    button.disabled = false;
+      "Could not create order. Please check Firebase settings and try again.";
+  } finally {
+    submitButton.disabled = false;
+    submitButton.textContent = "Continue to Payment";
   }
 });
 
-// Submit transaction ID for manual verification
-submitPayment.addEventListener("click", async () => {
-  const transactionId = transactionIdInput.value.trim();
+copyUpi?.addEventListener("click", async () => {
+  try {
+    await navigator.clipboard.writeText(UPI_ID);
+    copyUpi.textContent = "Copied!";
+  } catch {
+    copyUpi.textContent = "Copy unavailable";
+  }
+});
+
+submitPayment?.addEventListener("click", async () => {
+  const reference = transactionId.value.trim();
 
   if (!currentOrderId) {
-    paymentMessage.textContent = "Please create an order first.";
+    alert("Please create an order first.");
     return;
   }
 
-  if (transactionId.length < 6) {
-    paymentMessage.textContent = "Please enter a valid transaction ID.";
+  if (reference.length < 6) {
+    alert("Please enter a valid transaction reference.");
     return;
   }
 
   submitPayment.disabled = true;
-  paymentMessage.textContent = "Submitting payment details...";
+  submitPayment.textContent = "Submitting...";
 
   try {
     await addDoc(collection(db, "paymentSubmissions"), {
       orderId: currentOrderId,
-      transactionId,
+      transactionId: reference,
       verificationStatus: "pending",
-      createdAt: serverTimestamp()
+      submittedAt: serverTimestamp()
     });
 
-    paymentMessage.textContent =
-      "Details submitted! Your payment is awaiting verification. Your order is not confirmed yet.";
+    alert(
+      "Payment reference submitted. Your order is pending payment verification."
+    );
 
-    transactionIdInput.disabled = true;
-    submitPayment.textContent = "Details Submitted";
+    transactionId.value = "";
+    submitPayment.textContent = "Reference Submitted";
 
   } catch (error) {
-    console.error("Payment submission error:", error);
-    paymentMessage.textContent =
-      "Submission failed. Please try again.";
+    console.error(error);
+    alert("Could not submit reference. Please try again.");
     submitPayment.disabled = false;
+    submitPayment.textContent = "Submit Payment Reference";
   }
 });
-                           
+
+renderServices();
+      
