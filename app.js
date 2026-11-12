@@ -95,13 +95,14 @@ function selectService(id) {
 
   if (!selectedService) return;
 
-  $("galleryTitle").textContent = selectedService.name + " — Choose a style";
+  $("galleryTitle").textContent =
+    selectedService.name + " — Choose a style";
+
   $("selectedServiceInfo").textContent =
     `${selectedService.name} | Service price: ₹${selectedService.price}`;
 
   renderStyles();
   drawPreview();
-
   showSection("gallery");
 }
 
@@ -152,7 +153,10 @@ function drawPreview() {
   ctx.fillText("QUICKSERVE SAMPLE", 85, 115);
 
   ctx.font = "bold 58px Arial";
-  ctx.fillText(selectedService ? selectedService.name.toUpperCase() : "YOUR DESIGN", 85, 245, 720);
+  ctx.fillText(
+    selectedService ? selectedService.name.toUpperCase() : "YOUR DESIGN",
+    85, 245, 720
+  );
 
   ctx.font = "24px Arial";
   ctx.fillText(style.name.toUpperCase(), 85, 305);
@@ -189,6 +193,7 @@ async function logout() {
     await signOut(auth);
     toast("Logged out.");
   } catch (error) {
+    console.error(error);
     toast("Logout failed.");
   }
 }
@@ -238,10 +243,9 @@ $("orderForm").addEventListener("submit", async event => {
   }
 
   const customerName = $("customerName").value.trim();
-  const whatsapp = $("whatsapp").value.trim();
   const requirements = $("requirements").value.trim();
 
-  if (!customerName || !whatsapp || !requirements) {
+  if (!customerName || !requirements) {
     toast("Please complete all fields.");
     return;
   }
@@ -255,7 +259,6 @@ $("orderForm").addEventListener("submit", async event => {
       uid: currentUser.uid,
       email: currentUser.email,
       customerName,
-      whatsapp,
       requirements,
       serviceId: selectedService.id,
       serviceName: selectedService.name,
@@ -351,8 +354,10 @@ async function loadMyOrders() {
     const snapshot = await getDocs(q);
 
     if (snapshot.empty) {
-      $("ordersList").innerHTML =
-        `<div class="order-card"><p>No orders yet. Explore our services to get started.</p></div>`;
+      $("ordersList").innerHTML = `
+        <div class="order-card">
+          <p>No orders yet. Explore our services to get started.</p>
+        </div>`;
       return;
     }
 
@@ -367,8 +372,10 @@ async function loadMyOrders() {
           <p>Style: ${escapeHTML(data.styleName)}</p>
           <p>Payment: ${escapeHTML(statusLabel(data.paymentStatus))}</p>
           <p>Order status: ${escapeHTML(statusLabel(data.orderStatus))}</p>
-          ${data.deliveryNote ? `<p>Delivery note: ${escapeHTML(data.deliveryNote)}</p>` : ""}
-          ${data.deliveryUrl ? `<p>Delivery: <a href="${escapeHTML(data.deliveryUrl)}" target="_blank" rel="noopener">Open delivery link</a></p>` : ""}
+          ${data.deliveryNote
+            ? `<p>Delivery note: ${escapeHTML(data.deliveryNote)}</p>` : ""}
+          ${data.deliveryUrl
+            ? `<p>Delivery: <a href="${escapeHTML(data.deliveryUrl)}" target="_blank" rel="noopener">Open delivery link</a></p>` : ""}
           <span class="status">${escapeHTML(statusLabel(data.orderStatus))}</span>
         </article>
       `;
@@ -376,8 +383,10 @@ async function loadMyOrders() {
 
   } catch (error) {
     console.error(error);
-    $("ordersList").innerHTML =
-      `<div class="order-card"><p>Could not load orders. Check Firestore indexes and rules.</p></div>`;
+    $("ordersList").innerHTML = `
+      <div class="order-card">
+        <p>Could not load orders. Check Firestore indexes and rules.</p>
+      </div>`;
   }
 }
 
@@ -393,8 +402,8 @@ async function loadAdminOrders() {
     const snapshot = await getDocs(q);
 
     if (snapshot.empty) {
-      $("adminOrders").innerHTML =
-        `<div class="admin-card"><p>No orders received yet.</p></div>`;
+      $("adminOrders").innerHTML = `
+        <div class="admin-card"><p>No orders received yet.</p></div>`;
       return;
     }
 
@@ -407,7 +416,6 @@ async function loadAdminOrders() {
           <p><b>Order ID:</b> ${escapeHTML(item.id)}</p>
           <p><b>Customer:</b> ${escapeHTML(data.customerName)}</p>
           <p><b>Email:</b> ${escapeHTML(data.email)}</p>
-          <p><b>WhatsApp:</b> ${escapeHTML(data.whatsapp)}</p>
           <p><b>Style:</b> ${escapeHTML(data.styleName)}</p>
           <p><b>Requirements:</b> ${escapeHTML(data.requirements)}</p>
           <p><b>Transaction ID:</b> ${escapeHTML(data.transactionId || "Not submitted")}</p>
@@ -432,16 +440,21 @@ async function loadAdminOrders() {
     }).join("");
 
     document.querySelectorAll(".verify-btn").forEach(button => {
-      button.addEventListener("click", () => updatePayment(button.dataset.id, true));
+      button.addEventListener("click", () =>
+        updatePayment(button.dataset.id, true)
+      );
     });
 
     document.querySelectorAll(".reject-btn").forEach(button => {
-      button.addEventListener("click", () => updatePayment(button.dataset.id, false));
+      button.addEventListener("click", () =>
+        updatePayment(button.dataset.id, false)
+      );
     });
 
     document.querySelectorAll(".deliver-btn").forEach(button => {
       button.addEventListener("click", () => {
         const card = button.closest(".admin-card");
+
         updateDelivery(
           button.dataset.id,
           card.querySelector(".delivery-note").value.trim(),
@@ -452,8 +465,10 @@ async function loadAdminOrders() {
 
   } catch (error) {
     console.error(error);
-    $("adminOrders").innerHTML =
-      `<div class="admin-card"><p>Admin orders could not load: ${escapeHTML(error.message)}</p></div>`;
+    $("adminOrders").innerHTML = `
+      <div class="admin-card">
+        <p>Admin orders could not load: ${escapeHTML(error.message)}</p>
+      </div>`;
   }
 }
 
