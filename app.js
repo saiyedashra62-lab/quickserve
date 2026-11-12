@@ -1,300 +1,518 @@
-import { db } from "./firebase.js";
+import { auth, db, googleProvider } from "./firebase.js";
+
+import {
+  signInWithPopup,
+  signOut,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js";
+
 import {
   collection,
   addDoc,
+  getDocs,
+  query,
+  where,
+  orderBy,
+  doc,
+  updateDoc,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
 
+const ADMIN_EMAIL = "saiyedashra62@gmail.com";
+
 const services = [
-  { id: "posts", name: "Social Media Posts", price: 99, icon: "📱", desc: "Creative posts for Instagram and social media." },
-  { id: "banners", name: "Banners & Posters", price: 199, icon: "🎨", desc: "Eye-catching banners, flyers and posters." },
-  { id: "thumbnails", name: "YouTube Thumbnails", price: 149, icon: "▶️", desc: "Bold thumbnail layouts for your videos." },
-  { id: "resume", name: "Resume Maker", price: 149, icon: "📄", desc: "Clean and professional resume layouts." },
-  { id: "qr", name: "QR Code Maker", price: 49, icon: "▦", desc: "Simple branded QR design layouts." },
-  { id: "card", name: "Digital Visiting Card", price: 99, icon: "💳", desc: "Digital business card design layouts." },
-  { id: "invoice", name: "Invoice Maker", price: 99, icon: "🧾", desc: "Professional invoice layout designs." },
-  { id: "website", name: "Website Design", price: 999, icon: "🌐", desc: "Website layout concepts for your business." }
+  { id: "posts", name: "Social Media Posts", icon: "🎨", price: 99, desc: "Instagram, Facebook and promotional posts." },
+  { id: "banners", name: "Banners & Posters", icon: "🖼️", price: 199, desc: "Promotional banners and event posters." },
+  { id: "thumbnails", name: "YouTube Thumbnails", icon: "▶️", price: 149, desc: "Eye-catching video thumbnail designs." },
+  { id: "resume", name: "Resume Maker", icon: "📄", price: 149, desc: "Professional resume design." },
+  { id: "qr", name: "QR Code Maker", icon: "🔳", price: 49, desc: "Custom QR design requests." },
+  { id: "card", name: "Digital Visiting Card", icon: "💳", price: 99, desc: "Digital business card design." },
+  { id: "invoice", name: "Invoice Maker", icon: "🧾", price: 99, desc: "Invoice template design requests." },
+  { id: "website", name: "Website Design", icon: "💻", price: 999, desc: "Website design and development requests." }
 ];
 
 const styles = [
-  { name: "Purple Glow", bg: "#24134b", accent: "#d7a6ff" },
-  { name: "Midnight", bg: "#101b32", accent: "#76c9ff" },
-  { name: "Luxury Gold", bg: "#282015", accent: "#e9c77a" },
-  { name: "Neon", bg: "#111522", accent: "#75ffd2" },
-  { name: "Rose", bg: "#35172e", accent: "#ffb0d1" },
-  { name: "Minimal", bg: "#e9e7f1", accent: "#6e4ad1", dark: true }
+  { name: "Neon Glow", colors: ["#401a88", "#151a45"], title: "NEON STYLE" },
+  { name: "Luxury Dark", colors: ["#5c4520", "#171717"], title: "LUXURY LOOK" },
+  { name: "Modern Blue", colors: ["#075985", "#101d43"], title: "MODERN DESIGN" },
+  { name: "Purple Gradient", colors: ["#8b35ce", "#27104e"], title: "PURPLE VIBE" },
+  { name: "Minimal Clean", colors: ["#526174", "#202b3b"], title: "CLEAN DESIGN" },
+  { name: "Bold Creative", colors: ["#b83254", "#3a173c"], title: "BOLD CREATIVE" }
 ];
 
-const $ = (id) => document.getElementById(id);
-
+let currentUser = null;
+let selectedService = null;
 let selectedStyle = 0;
-let currentOrderId = "";
-let currentOrderAmount = 0;
-let designReady = false;
+let currentOrderId = null;
 
-function fillServiceSelect(select) {
-  select.innerHTML = services.map(service =>
-    `<option value="${service.id}">${service.name} — ₹${service.price}</option>`
-  ).join("");
+const $ = id => document.getElementById(id);
+
+function toast(message) {
+  const el = $("toast");
+  el.textContent = message;
+  el.classList.add("show");
+  setTimeout(() => el.classList.remove("show"), 3500);
+}
+
+function showSection(id) {
+  $(id).classList.remove("hidden");
+  $(id).scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function escapeHTML(value = "") {
+  return String(value).replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#039;"
+  })[char]);
 }
 
 function renderServices() {
-  $("serviceGrid").innerHTML = services.map(service => `
+  $("servicesGrid").innerHTML = services.map(service => `
     <article class="service-card">
       <div class="service-icon">${service.icon}</div>
-      <h3>${service.name}</h3>
-      <p>${service.desc}</p>
-      <div class="service-bottom">
-        <span class="price">₹${service.price}</span>
-        <button class="choose-btn" data-service="${service.id}">Choose ↗</button>
-      </div>
+      <h3>${escapeHTML(service.name)}</h3>
+      <p>${escapeHTML(service.desc)}</p>
+      <div class="price">₹${service.price}</div>
+      <button class="btn btn-primary choose-service" data-id="${service.id}">
+        Explore & Order
+      </button>
     </article>
   `).join("");
 
-  document.querySelectorAll("[data-service]").forEach(button => {
-    button.addEventListener("click", () => selectService(button.dataset.service));
-  });
-}
-
-function renderDemoStyles() {
-  $("demoGrid").innerHTML = styles.map((style, index) => `
-    <button type="button" class="demo-option ${index === selectedStyle ? "active" : ""}"
-      data-style="${index}">${style.name}</button>
-  `).join("");
-
-  document.querySelectorAll("[data-style]").forEach(button => {
+  document.querySelectorAll(".choose-service").forEach(button => {
     button.addEventListener("click", () => {
-      selectedStyle = Number(button.dataset.style);
-      renderDemoStyles();
+      selectService(button.dataset.id);
     });
   });
 }
 
 function selectService(id) {
-  $("selectedService").value = id;
-  $("orderService").value = id;
-  updateOrderPrice();
-  $("studio").scrollIntoView({ behavior: "smooth" });
+  selectedService = services.find(item => item.id === id);
+  selectedStyle = 0;
+
+  if (!selectedService) return;
+
+  $("galleryTitle").textContent = selectedService.name + " — Choose a style";
+  $("selectedServiceInfo").textContent =
+    `${selectedService.name} | Service price: ₹${selectedService.price}`;
+
+  renderStyles();
+  drawPreview();
+
+  showSection("gallery");
 }
 
-function updateOrderPrice() {
-  const service = services.find(item => item.id === $("orderService").value);
-  $("orderAmount").value = service ? `₹${service.price}` : "";
+function renderStyles() {
+  $("stylesGrid").innerHTML = styles.map((style, index) => `
+    <article class="style-card ${index === selectedStyle ? "selected" : ""}"
+      data-index="${index}">
+      <div class="style-art"
+        style="background:linear-gradient(130deg,${style.colors[0]},${style.colors[1]})">
+        <span>${style.title}</span>
+      </div>
+      <h3>${style.name}</h3>
+      <p>Sample layout ${index + 1}</p>
+    </article>
+  `).join("");
+
+  document.querySelectorAll(".style-card").forEach(card => {
+    card.addEventListener("click", () => {
+      selectedStyle = Number(card.dataset.index);
+      renderStyles();
+      drawPreview();
+    });
+  });
 }
 
-function drawDesign() {
-  const canvas = $("designCanvas");
+function drawPreview() {
+  const canvas = $("previewCanvas");
   const ctx = canvas.getContext("2d");
   const style = styles[selectedStyle];
-  const service = services.find(item => item.id === $("selectedService").value);
 
-  const title = $("designTitle").value.trim() || service.name.toUpperCase();
-  const subtitle = $("designSubtitle").value.trim() || "YOUR IDEA. YOUR STYLE.";
-  const prompt = $("designPrompt").value.trim();
+  const gradient = ctx.createLinearGradient(0, 0, 900, 560);
+  gradient.addColorStop(0, style.colors[0]);
+  gradient.addColorStop(1, style.colors[1]);
 
-  ctx.fillStyle = style.bg;
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  const dark = style.dark;
-  const mainColor = dark ? "#171326" : "#ffffff";
-  const textColor = dark ? "#171326" : "#ffffff";
-
-  const gradient = ctx.createLinearGradient(0, 0, 1080, 1080);
-  gradient.addColorStop(0, style.accent);
-  gradient.addColorStop(1, style.bg);
-  ctx.globalAlpha = 0.22;
   ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, 900, 560);
+
+  ctx.fillStyle = "rgba(255,255,255,.10)";
   ctx.beginPath();
-  ctx.arc(850, 180, 350, 0, Math.PI * 2);
+  ctx.arc(770, 100, 180, 0, Math.PI * 2);
   ctx.fill();
-  ctx.globalAlpha = 1;
 
-  ctx.strokeStyle = style.accent;
-  ctx.lineWidth = 5;
-  ctx.strokeRect(55, 55, 970, 970);
+  ctx.fillStyle = "rgba(255,255,255,.12)";
+  ctx.fillRect(55, 55, 790, 450);
 
-  ctx.fillStyle = style.accent;
-  ctx.font = "bold 28px Arial";
-  ctx.fillText("QUICKSERVE  /  CREATIVE STUDIO", 95, 135);
+  ctx.fillStyle = "#ffffff";
+  ctx.font = "bold 25px Arial";
+  ctx.fillText("QUICKSERVE SAMPLE", 85, 115);
 
-  ctx.globalAlpha = 0.18;
-  ctx.fillStyle = style.accent;
-  ctx.beginPath();
-  ctx.arc(830, 720, 230, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.globalAlpha = 1;
+  ctx.font = "bold 58px Arial";
+  ctx.fillText(selectedService ? selectedService.name.toUpperCase() : "YOUR DESIGN", 85, 245, 720);
 
-  ctx.fillStyle = textColor;
-  ctx.font = "bold 82px Arial";
+  ctx.font = "24px Arial";
+  ctx.fillText(style.name.toUpperCase(), 85, 305);
 
-  const words = title.split(" ");
-  let lines = [];
-  let line = "";
+  ctx.font = "18px Arial";
+  ctx.fillText("YOUR TEXT • YOUR IDEA • YOUR STYLE", 85, 390);
 
-  words.forEach(word => {
-    const test = line ? line + " " + word : word;
-    if (ctx.measureText(test).width > 850 && line) {
-      lines.push(line);
-      line = word;
-    } else {
-      line = test;
-    }
-  });
-  if (line) lines.push(line);
+  ctx.save();
+  ctx.translate(450, 300);
+  ctx.rotate(-0.45);
+  ctx.fillStyle = "rgba(255,255,255,.23)";
+  ctx.font = "bold 62px Arial";
+  ctx.textAlign = "center";
+  ctx.fillText("SAMPLE PREVIEW", 0, 0);
+  ctx.restore();
 
-  let y = 420;
-  lines.slice(0, 3).forEach(item => {
-    ctx.fillText(item, 95, y);
-    y += 105;
-  });
-
-  ctx.fillStyle = style.accent;
-  ctx.fillRect(95, y + 5, 170, 8);
-
-  ctx.fillStyle = textColor;
-  ctx.font = "32px Arial";
-  ctx.fillText(subtitle.slice(0, 55), 95, y + 100);
-
-  ctx.font = "bold 23px Arial";
-  ctx.fillStyle = style.accent;
-  ctx.fillText(service.name.toUpperCase(), 95, 900);
-
-  ctx.font = "20px Arial";
-  ctx.fillStyle = textColor;
-  ctx.fillText("DESIGN  •  CREATE  •  GROW", 95, 950);
-
-  if (prompt) {
-    ctx.globalAlpha = 0.7;
-    ctx.font = "18px Arial";
-    ctx.fillStyle = textColor;
-    ctx.fillText("CUSTOM CONCEPT PREVIEW", 95, 990);
-    ctx.globalAlpha = 1;
-  }
-
-  designReady = true;
-  $("downloadBtn").disabled = false;
+  ctx.fillStyle = "rgba(255,255,255,.65)";
+  ctx.font = "17px Arial";
+  ctx.fillText("QUICKSERVE • PREVIEW ONLY", 85, 465);
 }
 
-function downloadDesign() {
-  if (!designReady) return;
-  const link = document.createElement("a");
-  link.download = "quickserve-design.png";
-  link.href = $("designCanvas").toDataURL("image/png");
-  link.click();
-}
-
-async function createOrder(event) {
-  event.preventDefault();
-
-  const name = $("customerName").value.trim();
-  const whatsapp = $("whatsapp").value.trim();
-  const service = services.find(item => item.id === $("orderService").value);
-  const requirements = $("requirements").value.trim();
-
-  if (!service) {
-    alert("Please select a service.");
-    return;
-  }
-
-  if (!/^[0-9+\-\s]{8,15}$/.test(whatsapp)) {
-    alert("Please enter a valid contact number.");
-    return;
-  }
-
-  const button = $("placeOrderBtn");
-  button.disabled = true;
-  button.textContent = "Creating order...";
-
+async function login() {
   try {
-    const order = await addDoc(collection(db, "orders"), {
-      customerName: name,
-      whatsapp,
-      serviceId: service.id,
-      serviceName: service.name,
-      requirements,
-      amount: service.price,
-      paymentStatus: "pending",
-      orderStatus: "pending_verification",
-      createdAt: serverTimestamp()
-    });
-
-    currentOrderId = order.id;
-    currentOrderAmount = service.price;
-
-    $("paymentAmount").textContent = `₹${service.price}`;
-    $("paymentPanel").classList.remove("hidden");
-    $("orderStatus").textContent = `Order reference: ${order.id}`;
-    $("paymentPanel").scrollIntoView({ behavior: "smooth" });
+    await signInWithPopup(auth, googleProvider);
+    toast("Google sign-in successful.");
   } catch (error) {
     console.error(error);
-    alert("Order could not be saved. Please check your internet and Firebase setup.");
-  } finally {
-    button.disabled = false;
-    button.textContent = "Continue to Payment →";
+    toast("Login failed: " + error.message);
   }
 }
 
-async function submitPayment(event) {
+async function logout() {
+  try {
+    await signOut(auth);
+    toast("Logged out.");
+  } catch (error) {
+    toast("Logout failed.");
+  }
+}
+
+onAuthStateChanged(auth, async user => {
+  currentUser = user;
+
+  $("loginBtn").classList.toggle("hidden", !!user);
+  $("logoutBtn").classList.toggle("hidden", !user);
+
+  $("accountMessage").textContent = user
+    ? `Signed in as ${user.email}`
+    : "Sign in to view your orders.";
+
+  $("adminPanel").classList.toggle(
+    "hidden",
+    !(user && user.email === ADMIN_EMAIL)
+  );
+
+  if (user) {
+    await loadMyOrders();
+
+    if (user.email === ADMIN_EMAIL) {
+      await loadAdminOrders();
+    }
+  } else {
+    $("ordersList").innerHTML = "";
+    $("adminOrders").innerHTML = "";
+  }
+});
+
+$("loginBtn").addEventListener("click", login);
+$("logoutBtn").addEventListener("click", logout);
+
+$("orderForm").addEventListener("submit", async event => {
   event.preventDefault();
 
-  if (!currentOrderId) {
-    alert("Please create an order first.");
+  if (!currentUser) {
+    toast("Please sign in with Google first.");
+    await login();
     return;
   }
 
-  const transactionId = $("transactionId").value.trim();
-  if (transactionId.length < 5) {
-    alert("Please enter a valid transaction/reference ID.");
+  if (!selectedService) {
+    toast("Please select a service first.");
     return;
   }
 
-  const button = $("paymentForm").querySelector("button");
+  const customerName = $("customerName").value.trim();
+  const whatsapp = $("whatsapp").value.trim();
+  const requirements = $("requirements").value.trim();
+
+  if (!customerName || !whatsapp || !requirements) {
+    toast("Please complete all fields.");
+    return;
+  }
+
+  const button = event.submitter;
   button.disabled = true;
   button.textContent = "Submitting...";
 
   try {
-    await addDoc(collection(db, "paymentSubmissions"), {
-      orderId: currentOrderId,
-      transactionId,
-      amount: currentOrderAmount,
-      verificationStatus: "pending",
-      submittedAt: serverTimestamp()
-    });
+    const order = {
+      uid: currentUser.uid,
+      email: currentUser.email,
+      customerName,
+      whatsapp,
+      requirements,
+      serviceId: selectedService.id,
+      serviceName: selectedService.name,
+      styleName: styles[selectedStyle].name,
+      amount: selectedService.price,
+      paymentStatus: "pending",
+      orderStatus: "pending_payment",
+      transactionId: "",
+      deliveryNote: "",
+      deliveryUrl: "",
+      createdAt: serverTimestamp()
+    };
 
-    $("orderStatus").textContent =
-      "Payment details submitted. Your payment is pending manual verification. Keep your order reference safe.";
+    const result = await addDoc(collection(db, "orders"), order);
 
-    $("paymentForm").reset();
+    currentOrderId = result.id;
+
+    $("paymentOrderInfo").textContent =
+      `Order: ${result.id} | ${selectedService.name} | Amount: ₹${selectedService.price}`;
+
+    $("transactionId").value = "";
+    showSection("paymentSection");
+
+    toast("Order created. Complete payment and submit transaction ID.");
+    await loadMyOrders();
+
   } catch (error) {
     console.error(error);
-    alert("Payment details could not be submitted. Please try again.");
+    toast("Order failed: " + error.message);
+  } finally {
+    button.disabled = false;
+    button.textContent = "Submit Order";
+  }
+});
+
+$("paymentForm").addEventListener("submit", async event => {
+  event.preventDefault();
+
+  if (!currentUser || !currentOrderId) {
+    toast("Create an order first.");
+    return;
+  }
+
+  const transactionId = $("transactionId").value.trim();
+
+  if (transactionId.length < 6) {
+    toast("Please enter a valid transaction reference.");
+    return;
+  }
+
+  const button = event.submitter;
+  button.disabled = true;
+  button.textContent = "Submitting...";
+
+  try {
+    const orderRef = doc(db, "orders", currentOrderId);
+
+    await updateDoc(orderRef, {
+      transactionId,
+      paymentStatus: "submitted",
+      orderStatus: "pending_verification",
+      paymentSubmittedAt: serverTimestamp()
+    });
+
+    toast("Payment details submitted for admin verification.");
+    currentOrderId = null;
+
+    await loadMyOrders();
+
+  } catch (error) {
+    console.error(error);
+    toast("Payment submission failed: " + error.message);
   } finally {
     button.disabled = false;
     button.textContent = "Submit Payment Details";
   }
+});
+
+function statusLabel(value) {
+  return String(value || "pending").replaceAll("_", " ");
 }
 
-function init() {
-  fillServiceSelect($("selectedService"));
-  fillServiceSelect($("orderService"));
-  renderServices();
-  renderDemoStyles();
-  updateOrderPrice();
+async function loadMyOrders() {
+  if (!currentUser) return;
 
-  $("selectedService").addEventListener("change", () => {
-    $("orderService").value = $("selectedService").value;
-    updateOrderPrice();
-    designReady = false;
-    $("downloadBtn").disabled = true;
-  });
+  try {
+    const q = query(
+      collection(db, "orders"),
+      where("uid", "==", currentUser.uid),
+      orderBy("createdAt", "desc")
+    );
 
-  $("orderService").addEventListener("change", updateOrderPrice);
-  $("generateBtn").addEventListener("click", drawDesign);
-  $("downloadBtn").addEventListener("click", downloadDesign);
-  $("orderForm").addEventListener("submit", createOrder);
-  $("paymentForm").addEventListener("submit", submitPayment);
+    const snapshot = await getDocs(q);
 
-  $("year").textContent = new Date().getFullYear();
+    if (snapshot.empty) {
+      $("ordersList").innerHTML =
+        `<div class="order-card"><p>No orders yet. Explore our services to get started.</p></div>`;
+      return;
+    }
+
+    $("ordersList").innerHTML = snapshot.docs.map(item => {
+      const data = item.data();
+
+      return `
+        <article class="order-card">
+          <h3>${escapeHTML(data.serviceName)}</h3>
+          <p>Order ID: ${escapeHTML(item.id)}</p>
+          <p>Amount: ₹${Number(data.amount || 0)}</p>
+          <p>Style: ${escapeHTML(data.styleName)}</p>
+          <p>Payment: ${escapeHTML(statusLabel(data.paymentStatus))}</p>
+          <p>Order status: ${escapeHTML(statusLabel(data.orderStatus))}</p>
+          ${data.deliveryNote ? `<p>Delivery note: ${escapeHTML(data.deliveryNote)}</p>` : ""}
+          ${data.deliveryUrl ? `<p>Delivery: <a href="${escapeHTML(data.deliveryUrl)}" target="_blank" rel="noopener">Open delivery link</a></p>` : ""}
+          <span class="status">${escapeHTML(statusLabel(data.orderStatus))}</span>
+        </article>
+      `;
+    }).join("");
+
+  } catch (error) {
+    console.error(error);
+    $("ordersList").innerHTML =
+      `<div class="order-card"><p>Could not load orders. Check Firestore indexes and rules.</p></div>`;
+  }
 }
 
-init();
+async function loadAdminOrders() {
+  if (!currentUser || currentUser.email !== ADMIN_EMAIL) return;
+
+  try {
+    const q = query(
+      collection(db, "orders"),
+      orderBy("createdAt", "desc")
+    );
+
+    const snapshot = await getDocs(q);
+
+    if (snapshot.empty) {
+      $("adminOrders").innerHTML =
+        `<div class="admin-card"><p>No orders received yet.</p></div>`;
+      return;
+    }
+
+    $("adminOrders").innerHTML = snapshot.docs.map(item => {
+      const data = item.data();
+
+      return `
+        <article class="admin-card" data-order="${escapeHTML(item.id)}">
+          <h3>${escapeHTML(data.serviceName)} — ₹${Number(data.amount || 0)}</h3>
+          <p><b>Order ID:</b> ${escapeHTML(item.id)}</p>
+          <p><b>Customer:</b> ${escapeHTML(data.customerName)}</p>
+          <p><b>Email:</b> ${escapeHTML(data.email)}</p>
+          <p><b>WhatsApp:</b> ${escapeHTML(data.whatsapp)}</p>
+          <p><b>Style:</b> ${escapeHTML(data.styleName)}</p>
+          <p><b>Requirements:</b> ${escapeHTML(data.requirements)}</p>
+          <p><b>Transaction ID:</b> ${escapeHTML(data.transactionId || "Not submitted")}</p>
+          <p><b>Payment:</b> ${escapeHTML(statusLabel(data.paymentStatus))}</p>
+          <p><b>Order:</b> ${escapeHTML(statusLabel(data.orderStatus))}</p>
+
+          <div class="admin-actions">
+            <button class="btn btn-primary verify-btn" data-id="${escapeHTML(item.id)}">
+              Verify payment
+            </button>
+            <button class="btn btn-outline reject-btn" data-id="${escapeHTML(item.id)}">
+              Reject payment
+            </button>
+            <input class="delivery-note" placeholder="Delivery note / instructions">
+            <input class="delivery-url" type="url" placeholder="Optional delivery URL (https://...)">
+            <button class="btn btn-primary deliver-btn" data-id="${escapeHTML(item.id)}">
+              Mark delivered
+            </button>
+          </div>
+        </article>
+      `;
+    }).join("");
+
+    document.querySelectorAll(".verify-btn").forEach(button => {
+      button.addEventListener("click", () => updatePayment(button.dataset.id, true));
+    });
+
+    document.querySelectorAll(".reject-btn").forEach(button => {
+      button.addEventListener("click", () => updatePayment(button.dataset.id, false));
+    });
+
+    document.querySelectorAll(".deliver-btn").forEach(button => {
+      button.addEventListener("click", () => {
+        const card = button.closest(".admin-card");
+        updateDelivery(
+          button.dataset.id,
+          card.querySelector(".delivery-note").value.trim(),
+          card.querySelector(".delivery-url").value.trim()
+        );
+      });
+    });
+
+  } catch (error) {
+    console.error(error);
+    $("adminOrders").innerHTML =
+      `<div class="admin-card"><p>Admin orders could not load: ${escapeHTML(error.message)}</p></div>`;
+  }
+}
+
+async function updatePayment(orderId, approved) {
+  if (!currentUser || currentUser.email !== ADMIN_EMAIL) {
+    toast("Admin access required.");
+    return;
+  }
+
+  try {
+    const orderRef = doc(db, "orders", orderId);
+
+    await updateDoc(orderRef, {
+      paymentStatus: approved ? "verified" : "rejected",
+      orderStatus: approved ? "paid_processing" : "payment_rejected",
+      verifiedAt: serverTimestamp()
+    });
+
+    toast(approved ? "Payment marked verified." : "Payment marked rejected.");
+
+    await loadAdminOrders();
+    await loadMyOrders();
+
+  } catch (error) {
+    console.error(error);
+    toast("Update failed: " + error.message);
+  }
+}
+
+async function updateDelivery(orderId, note, url) {
+  if (!currentUser || currentUser.email !== ADMIN_EMAIL) {
+    toast("Admin access required.");
+    return;
+  }
+
+  if (!note && !url) {
+    toast("Enter a delivery note or delivery URL.");
+    return;
+  }
+
+  try {
+    const orderRef = doc(db, "orders", orderId);
+
+    await updateDoc(orderRef, {
+      orderStatus: "delivered",
+      deliveryNote: note,
+      deliveryUrl: url,
+      deliveredAt: serverTimestamp()
+    });
+
+    toast("Order marked delivered.");
+    await loadAdminOrders();
+    await loadMyOrders();
+
+  } catch (error) {
+    console.error(error);
+    toast("Delivery update failed: " + error.message);
+  }
+}
+
+renderServices();
+$("year").textContent = new Date().getFullYear();
