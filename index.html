@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,6 +7,7 @@
   <meta name="theme-color" content="#080914">
   <title>QuickServe — Creative Services</title>
   <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
 
@@ -130,10 +132,36 @@
       <h2>Complete your payment</h2>
       <p id="paymentOrderInfo"></p>
 
-      <img src="famx-qr.png" alt="UPI payment QR code" class="qr-image">
+      <div style="background:#fff;color:#111;padding:18px;border-radius:16px;text-align:center;margin:20px auto;max-width:320px;">
+        <h3 style="color:#111;margin:0 0 12px;">Scan & Pay</h3>
+        <div id="paymentQr"
+          style="min-height:220px;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+          <span style="color:#555;">Generating QR code...</span>
+        </div>
+        <p style="color:#555;font-size:12px;margin:12px 0 0;">
+          Scan using a supported UPI app
+        </p>
+      </div>
+
+      <div style="background:rgba(120,100,255,.10);border:1px solid rgba(150,130,255,.3);border-radius:14px;padding:18px;margin:18px 0;">
+        <h3 style="margin-top:0;">Pay using UPI ID</h3>
+        <p style="margin-bottom:8px;">UPI ID</p>
+
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <strong id="upiIdText" style="font-size:17px;word-break:break-all;">Syeadashra@fam</strong>
+          <button type="button" id="copyUpiBtn" class="btn btn-outline">
+            Copy UPI ID
+          </button>
+        </div>
+
+        <button type="button" id="payUpiBtn"
+          class="btn btn-primary full" style="margin-top:15px;">
+          Pay using UPI App ↗
+        </button>
+      </div>
 
       <p class="small-note">
-        Scan this QR using your UPI app. Verify the receiver details before paying.
+        Before paying, check that the UPI app shows the correct receiver and order amount.
       </p>
 
       <form id="paymentForm">
@@ -147,7 +175,7 @@
       </form>
 
       <p class="small-note">
-        Payment is subject to manual admin verification.
+        Payment is subject to manual admin verification. Submitting a transaction ID does not itself confirm payment.
       </p>
     </div>
   </section>
@@ -181,4 +209,4 @@
 
 <script type="module" src="app.js"></script>
 </body>
-      </html>
+</html>
