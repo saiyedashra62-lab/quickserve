@@ -3,181 +3,141 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#080817">
-  <title>QuickServe | Creative Digital Services</title>
+  <meta name="theme-color" content="#080914">
+  <title>QuickServe — Creative Services</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="glow glow-one"></div>
-  <div class="glow glow-two"></div>
 
-  <header class="navbar">
-    <a class="brand" href="#">Quick<span>Serve</span><b>.</b></a>
-    <nav>
-      <a href="#services">Services</a>
-      <a href="#how">How it works</a>
-      <a href="#order">Order</a>
-    </nav>
-    <a class="nav-btn" href="#services">Explore Services</a>
-  </header>
+<header class="navbar">
+  <a class="logo" href="#">Quick<span>Serve</span><b>.</b></a>
+  <nav>
+    <a href="#services">Services</a>
+    <a href="#how">How it works</a>
+    <button id="loginBtn" class="btn btn-outline">Google Sign In</button>
+    <button id="logoutBtn" class="btn btn-outline hidden">Logout</button>
+  </nav>
+</header>
 
-  <main>
-    <section class="hero">
-      <div class="hero-content">
-        <div class="eyebrow"><span class="live-dot"></span> YOUR DIGITAL CREATIVE PARTNER</div>
-        <h1>Make your ideas<br>look <span>extraordinary.</span></h1>
-        <p>Creative designs and digital services for your brand, business and personal projects — all in one place.</p>
-        <div class="hero-actions">
-          <a class="primary-btn" href="#services">Explore Services ↗</a>
-          <a class="secondary-btn" href="#how">How it works</a>
-        </div>
-        <div class="hero-note">✦ Simple process &nbsp; ✦ Affordable services &nbsp; ✦ Custom requests</div>
-      </div>
-      <div class="hero-art">
-        <div class="art-card art-back">
-          <span>CREATIVE STUDIO</span>
-          <strong>YOUR<br>IDEA.</strong>
-        </div>
-        <div class="art-card art-front">
-          <span class="art-tag">QUICKSERVE DESIGN</span>
-          <div class="art-shape"></div>
-          <strong>MAKE IT<br>STAND OUT.</strong>
-          <small>DESIGN • CREATE • GROW</small>
-        </div>
-        <div class="floating-star">✦</div>
-      </div>
-    </section>
+<section class="hero">
+  <div class="hero-content">
+    <span class="eyebrow">YOUR CREATIVE PARTNER</span>
+    <h1>Creative work.<br><span>Made simple.</span></h1>
+    <p>Posts, banners, thumbnails, resumes, QR codes and more — order your creative service in a few simple steps.</p>
+    <a href="#services" class="btn btn-primary">Explore Services ↗</a>
+  </div>
+  <div class="hero-art">
+    <div class="orb orb-one"></div>
+    <div class="orb orb-two"></div>
+    <div class="hero-card">
+      <span>QUICKSERVE STUDIO</span>
+      <h2>Ideas into<br>visuals.</h2>
+      <div class="hero-line"></div>
+      <small>DESIGN • CREATE • DELIVER</small>
+    </div>
+  </div>
+</section>
 
-    <section class="section" id="services">
-      <div class="section-heading">
-        <div>
-          <div class="eyebrow">WHAT WE OFFER</div>
-          <h2>Choose your <span>service.</span></h2>
-          <p>Choose a service to see its design examples and create your own preview.</p>
-        </div>
-      </div>
-      <div class="service-grid" id="serviceGrid"></div>
-    </section>
+<section class="trust-row">
+  <div><strong>08</strong><span>Creative services</span></div>
+  <div><strong>48</strong><span>Sample styles</span></div>
+  <div><strong>24/7</strong><span>Online ordering</span></div>
+</section>
 
-    <section class="section studio-section" id="studio">
-      <div class="section-heading">
-        <div>
-          <div class="eyebrow">YOUR CREATIVE SPACE</div>
-          <h2>Design <span>studio.</span></h2>
-          <p>Select a style, write your idea and generate a simple design preview.</p>
-        </div>
-      </div>
+<main>
+  <section id="services" class="section">
+    <div class="section-heading">
+      <span class="eyebrow">WHAT WE OFFER</span>
+      <h2>Explore our services</h2>
+      <p>Choose a service, explore sample styles and submit your requirements.</p>
+    </div>
+    <div id="servicesGrid" class="services-grid"></div>
+  </section>
 
-      <div class="studio-layout">
-        <div class="studio-controls">
-          <label for="selectedService">Selected service</label>
-          <select id="selectedService"></select>
+  <section id="how" class="section how-section">
+    <div class="section-heading">
+      <span class="eyebrow">SIMPLE PROCESS</span>
+      <h2>How QuickServe works</h2>
+    </div>
+    <div class="steps-grid">
+      <article class="step"><b>01</b><h3>Choose a service</h3><p>Select the service you need.</p></article>
+      <article class="step"><b>02</b><h3>Choose a style</h3><p>Explore sample layouts and choose one.</p></article>
+      <article class="step"><b>03</b><h3>Submit your order</h3><p>Enter your details and requirements.</p></article>
+      <article class="step"><b>04</b><h3>Payment & delivery</h3><p>Submit payment details. Delivery follows verification.</p></article>
+    </div>
+  </section>
 
-          <label>Choose a demo style</label>
-          <div class="demo-grid" id="demoGrid"></div>
+  <section id="gallery" class="section hidden">
+    <div class="section-heading">
+      <span class="eyebrow">STYLE GALLERY</span>
+      <h2 id="galleryTitle">Choose your style</h2>
+      <p>These are sample layout previews, not finished custom designs.</p>
+    </div>
+    <div id="stylesGrid" class="styles-grid"></div>
+    <div class="preview-area">
+      <h3>Selected sample preview</h3>
+      <canvas id="previewCanvas" width="900" height="560"></canvas>
+      <p class="watermark-note">PREVIEW ONLY • QUICKSERVE</p>
+    </div>
+    <div class="order-box">
+      <h3>Submit your order</h3>
+      <p id="selectedServiceInfo"></p>
+      <form id="orderForm">
+        <label>Your name</label>
+        <input id="customerName" required maxlength="80" placeholder="Enter your name">
+        <label>WhatsApp number</label>
+        <input id="whatsapp" required maxlength="20" placeholder="Enter contact number">
+        <label>Your requirements / prompt</label>
+        <textarea id="requirements" required maxlength="2000" rows="5" placeholder="Describe exactly what you want. Include text, colours, size and other details."></textarea>
+        <button class="btn btn-primary full" type="submit">Submit Order</button>
+      </form>
+      <p class="small-note">You must sign in with Google before placing an order.</p>
+    </div>
+  </section>
 
-          <label for="designTitle">Main heading</label>
-          <input id="designTitle" maxlength="45" placeholder="Example: GRAND OPENING">
+  <section id="paymentSection" class="section hidden">
+    <div class="payment-box">
+      <span class="eyebrow">PAYMENT SUBMISSION</span>
+      <h2>Complete your payment</h2>
+      <p id="paymentOrderInfo"></p>
+      <img src="famx-qr.png" alt="UPI payment QR code" class="qr-image">
+      <p class="small-note">Scan this QR using your UPI app. Verify the receiver details before paying.</p>
+      <form id="paymentForm">
+        <label>UPI transaction ID / UTR</label>
+        <input id="transactionId" required maxlength="100" placeholder="Enter transaction reference">
+        <button class="btn btn-primary full" type="submit">Submit Payment Details</button>
+      </form>
+      <p class="small-note">Submitting a transaction ID does not confirm payment. Admin will check the payment manually.</p>
+    </div>
+  </section>
 
-          <label for="designSubtitle">Subtitle</label>
-          <input id="designSubtitle" maxlength="70" placeholder="Example: Discover something amazing">
+  <section id="myOrders" class="section">
+    <div class="section-heading">
+      <span class="eyebrow">YOUR ACCOUNT</span>
+      <h2>My orders</h2>
+      <p id="accountMessage">Sign in to view your orders.</p>
+    </div>
+    <div id="ordersList" class="orders-list"></div>
+  </section>
 
-          <label for="designPrompt">Describe your design idea</label>
-          <textarea id="designPrompt" rows="4" maxlength="300"
-            placeholder="Example: Make a premium purple sale poster for my clothing store."></textarea>
+  <section id="adminPanel" class="section hidden">
+    <div class="section-heading">
+      <span class="eyebrow">ADMIN AREA</span>
+      <h2>Order management</h2>
+      <p>Review payment submissions and update delivery status.</p>
+    </div>
+    <div id="adminOrders" class="admin-orders"></div>
+  </section>
+</main>
 
-          <button class="primary-btn full-btn" id="generateBtn">Generate Preview ✦</button>
-          <button class="secondary-btn full-btn" id="downloadBtn" disabled>Download PNG ↓</button>
-        </div>
+<footer>
+  <a class="logo" href="#">Quick<span>Serve</span><b>.</b></a>
+  <p>Creative services made simple.</p>
+  <small>© <span id="year"></span> QuickServe. All rights reserved.</small>
+</footer>
 
-        <div class="preview-panel">
-          <div class="preview-top">
-            <span>LIVE PREVIEW</span>
-            <span id="previewSize">1080 × 1080</span>
-          </div>
-          <div class="canvas-wrap">
-            <canvas id="designCanvas" width="1080" height="1080"></canvas>
-          </div>
-          <p class="preview-hint">Preview is a simple browser-based design layout. It is not an AI image generator.</p>
-        </div>
-      </div>
-    </section>
+<div id="toast" class="toast"></div>
 
-    <section class="section how-section" id="how">
-      <div class="eyebrow">SIMPLE PROCESS</div>
-      <h2>How it <span>works.</span></h2>
-      <div class="steps-grid">
-        <article class="step-card"><b>01</b><h3>Choose a service</h3><p>Explore the available services and demo styles.</p></article>
-        <article class="step-card"><b>02</b><h3>Create your preview</h3><p>Enter your text and generate a sample design.</p></article>
-        <article class="step-card"><b>03</b><h3>Place your order</h3><p>Share your contact details and requirements.</p></article>
-        <article class="step-card"><b>04</b><h3>Submit payment details</h3><p>Pay using the displayed QR and submit your transaction ID.</p></article>
-      </div>
-    </section>
-
-    <section class="section order-section" id="order">
-      <div class="section-heading">
-        <div>
-          <div class="eyebrow">LET'S GET STARTED</div>
-          <h2>Place your <span>order.</span></h2>
-          <p>Fill in your details and requirements below.</p>
-        </div>
-      </div>
-
-      <div class="order-card">
-        <form id="orderForm">
-          <div class="form-grid">
-            <div>
-              <label for="customerName">Your name</label>
-              <input id="customerName" required maxlength="60" placeholder="Enter your name">
-            </div>
-            <div>
-              <label for="whatsapp">WhatsApp number</label>
-              <input id="whatsapp" required maxlength="15" inputmode="tel" placeholder="Enter your number">
-            </div>
-            <div>
-              <label for="orderService">Service</label>
-              <select id="orderService" required></select>
-            </div>
-            <div>
-              <label for="orderAmount">Price</label>
-              <input id="orderAmount" readonly>
-            </div>
-          </div>
-
-          <label for="requirements">Your requirements</label>
-          <textarea id="requirements" rows="5" required maxlength="1500"
-            placeholder="Explain what you need, text, colours, business details, etc."></textarea>
-
-          <button class="primary-btn full-btn" id="placeOrderBtn" type="submit">Continue to Payment →</button>
-          <p class="small-note">Your order will remain pending until payment is checked manually.</p>
-        </form>
-
-        <div class="payment-panel hidden" id="paymentPanel">
-          <div class="payment-heading">
-            <span class="eyebrow">ORDER CREATED</span>
-            <h3>Complete your payment</h3>
-            <p>Scan the QR code using your UPI app.</p>
-          </div>
-          <div class="payment-amount" id="paymentAmount">₹0</div>
-          <img src="famx-qr.png" alt="Payment QR Code" class="qr-image">
-          <p class="small-note">After paying, enter your transaction/reference ID below. Never share your UPI PIN or OTP.</p>
-          <form id="paymentForm">
-            <label for="transactionId">UPI transaction / reference ID</label>
-            <input id="transactionId" required maxlength="80" placeholder="Enter transaction ID">
-            <button class="primary-btn full-btn" type="submit">Submit Payment Details</button>
-          </form>
-          <div class="order-status" id="orderStatus"></div>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <a class="brand" href="#">Quick<span>Serve</span><b>.</b></a>
-    <p>Creative ideas. Digital solutions.</p>
-    <small>© <span id="year"></span> QuickServe. All rights reserved.</small>
-  </footer>
-
-  <script type="module" src="app.js"></script>
+<script type="module" src="app.js"></script>
 </body>
 </html>
