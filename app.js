@@ -1,3 +1,4 @@
+
 import { auth, db, googleProvider } from "./firebase.js";
 
 import {
@@ -19,6 +20,10 @@ import {
 } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
 
 const ADMIN_EMAIL = "saiyedashra62@gmail.com";
+
+// Payment receiver details
+const UPI_ID = "Syeadashra@fam";
+const UPI_NAME = "QuickServe";
 
 const services = [
   { id: "posts", name: "Social Media Posts", icon: "🎨", price: 99, desc: "Instagram, Facebook and promotional posts." },
@@ -44,6 +49,7 @@ let currentUser = null;
 let selectedService = null;
 let selectedStyle = 0;
 let currentOrderId = null;
+let currentPaymentLink = "";
 
 const $ = id => document.getElementById(id);
 
@@ -67,6 +73,79 @@ function escapeHTML(value = "") {
     '"': "&quot;",
     "'": "&#039;"
   })[char]);
+}
+
+// Create a UPI payment link for this order.
+function createUpiLink(orderId, amount) {
+  const params = new URLSearchParams({
+    pa: UPI_ID,
+    pn: UPI_NAME,
+    am: Number(amount).toFixed(2),
+    cu: "INR",
+    tn: `QuickServe Order ${orderId}`
+  });
+
+  return `upi://pay?${params.toString()}`;
+}
+
+// Generate QR directly in the browser. No QR image file is needed.
+function generatePaymentQR(orderId, amount) {
+  const container = $("paymentQr");
+  container.innerHTML = "";
+
+  currentPaymentLink = createUpiLink(orderId, amount);
+
+  if (!window.QRCode) {
+    container.innerHTML =
+      '<p style="color:#b00020;text-align:center;">QR generator did not load. Please check your internet connection and refresh.</p>';
+    return;
+  }
+
+  try {
+    new window.QRCode(container, {
+      text: currentPaymentLink,
+      width: 220,
+      height: 220,
+      colorDark: "#000000",
+      colorLight: "#ffffff",
+      correctLevel: window.QRCode.CorrectLevel.M
+    });
+  } catch (error) {
+    console.error("QR generation error:", error);
+    container.innerHTML =
+      '<p style="color:#b00020;">QR could not be generated. Use the UPI ID option below.</p>';
+  }
+}
+
+async function copyUpiId() {
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(UPI_ID);
+    } else {
+      const temp = document.createElement("textarea");
+      temp.value = UPI_ID;
+      document.body.appendChild(temp);
+      temp.select();
+      const copied = document.execCommand("copy");
+      temp.remove();
+
+      if (!copied) throw new Error("Copy not supported");
+    }
+
+    toast("UPI ID copied.");
+  } catch (error) {
+    console.error(error);
+    toast("Copy failed. Please copy the UPI ID manually.");
+  }
+}
+
+function openUpiApp() {
+  if (!currentPaymentLink) {
+    toast("Create an order first.");
+    return;
+  }
+
+  window.location.href = currentPaymentLink;
 }
 
 function renderServices() {
@@ -228,6 +307,9 @@ onAuthStateChanged(auth, async user => {
 $("loginBtn").addEventListener("click", login);
 $("logoutBtn").addEventListener("click", logout);
 
+$("copyUpiBtn").addEventListener("click", copyUpiId);
+$("payUpiBtn").addEventListener("click", openUpiApp);
+
 $("orderForm").addEventListener("submit", async event => {
   event.preventDefault();
 
@@ -279,7 +361,11 @@ $("orderForm").addEventListener("submit", async event => {
     $("paymentOrderInfo").textContent =
       `Order: ${result.id} | ${selectedService.name} | Amount: ₹${selectedService.price}`;
 
+    $("upiIdText").textContent = UPI_ID;
     $("transactionId").value = "";
+
+    generatePaymentQR(result.id, selectedService.price);
+
     showSection("paymentSection");
 
     toast("Order created. Complete payment and submit transaction ID.");
@@ -325,6 +411,7 @@ $("paymentForm").addEventListener("submit", async event => {
 
     toast("Payment details submitted for admin verification.");
     currentOrderId = null;
+    currentPaymentLink = "";
 
     await loadMyOrders();
 
@@ -531,3 +618,4 @@ async function updateDelivery(orderId, note, url) {
 
 renderServices();
 $("year").textContent = new Date().getFullYear();
+  
