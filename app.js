@@ -1,300 +1,300 @@
-
 import { db } from "./firebase.js";
-
 import {
   collection,
-  doc,
-  setDoc,
   addDoc,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
 
 const services = [
-  {
-    name: "Social Media Posts",
-    price: 99,
-    icon: "📱",
-    description: "Creative Instagram and social media designs."
-  },
-  {
-    name: "Banners & Posters",
-    price: 199,
-    icon: "🎨",
-    description: "Professional promotional banners and posters."
-  },
-  {
-    name: "YouTube Thumbnails",
-    price: 149,
-    icon: "▶️",
-    description: "Eye-catching YouTube thumbnail designs."
-  },
-  {
-    name: "Resume Maker",
-    price: 149,
-    icon: "📄",
-    description: "Clean and professional resume designs."
-  },
-  {
-    name: "QR Code Maker",
-    price: 49,
-    icon: "▦",
-    description: "Custom QR code designs for your business."
-  },
-  {
-    name: "Digital Visiting Card",
-    price: 99,
-    icon: "💳",
-    description: "Modern digital business cards."
-  },
-  {
-    name: "Invoice Maker",
-    price: 99,
-    icon: "🧾",
-    description: "Professional invoice designs."
-  },
-  {
-    name: "Website Design",
-    price: 999,
-    icon: "💻",
-    description: "Modern responsive website designs."
-  }
+  { id: "posts", name: "Social Media Posts", price: 99, icon: "📱", desc: "Creative posts for Instagram and social media." },
+  { id: "banners", name: "Banners & Posters", price: 199, icon: "🎨", desc: "Eye-catching banners, flyers and posters." },
+  { id: "thumbnails", name: "YouTube Thumbnails", price: 149, icon: "▶️", desc: "Bold thumbnail layouts for your videos." },
+  { id: "resume", name: "Resume Maker", price: 149, icon: "📄", desc: "Clean and professional resume layouts." },
+  { id: "qr", name: "QR Code Maker", price: 49, icon: "▦", desc: "Simple branded QR design layouts." },
+  { id: "card", name: "Digital Visiting Card", price: 99, icon: "💳", desc: "Digital business card design layouts." },
+  { id: "invoice", name: "Invoice Maker", price: 99, icon: "🧾", desc: "Professional invoice layout designs." },
+  { id: "website", name: "Website Design", price: 999, icon: "🌐", desc: "Website layout concepts for your business." }
 ];
 
-const demoStyles = [
-  "Modern Minimal",
-  "Luxury Premium",
-  "Bold Creative",
-  "Neon Glow",
-  "Elegant Classic",
-  "Business Professional"
+const styles = [
+  { name: "Purple Glow", bg: "#24134b", accent: "#d7a6ff" },
+  { name: "Midnight", bg: "#101b32", accent: "#76c9ff" },
+  { name: "Luxury Gold", bg: "#282015", accent: "#e9c77a" },
+  { name: "Neon", bg: "#111522", accent: "#75ffd2" },
+  { name: "Rose", bg: "#35172e", accent: "#ffb0d1" },
+  { name: "Minimal", bg: "#e9e7f1", accent: "#6e4ad1", dark: true }
 ];
 
-const serviceGrid = document.getElementById("serviceGrid");
-const demoModal = document.getElementById("demoModal");
-const demoGrid = document.getElementById("demoGrid");
-const modalTitle = document.getElementById("modalTitle");
-const modalPrice = document.getElementById("modalPrice");
-const modalContinue = document.getElementById("modalContinue");
-const closeModal = document.getElementById("closeModal");
+const $ = (id) => document.getElementById(id);
 
-const orderForm = document.getElementById("orderForm");
-const serviceSelect = document.getElementById("service");
-const demoStyleInput = document.getElementById("demoStyle");
-const customerInput = document.getElementById("customer");
-const emailInput = document.getElementById("email");
-const detailsInput = document.getElementById("details");
-const formMessage = document.getElementById("formMessage");
-
-const paymentSection = document.getElementById("paymentSection");
-const paymentAmount = document.getElementById("paymentAmount");
-const orderReference = document.getElementById("orderReference");
-const transactionId = document.getElementById("transactionId");
-const submitPayment = document.getElementById("submitPayment");
-const copyUpi = document.getElementById("copyUpi");
-
-const UPI_ID = "YOUR_UPI_ID_HERE";
-
-let selectedService = null;
-let selectedStyle = "";
+let selectedStyle = 0;
 let currentOrderId = "";
+let currentOrderAmount = 0;
+let designReady = false;
 
-function createId() {
-  return "QS" + Date.now().toString().slice(-8);
+function fillServiceSelect(select) {
+  select.innerHTML = services.map(service =>
+    `<option value="${service.id}">${service.name} — ₹${service.price}</option>`
+  ).join("");
 }
 
 function renderServices() {
-  if (!serviceGrid) return;
-
-  serviceGrid.innerHTML = services.map((service, index) => `
+  $("serviceGrid").innerHTML = services.map(service => `
     <article class="service-card">
       <div class="service-icon">${service.icon}</div>
       <h3>${service.name}</h3>
-      <p>${service.description}</p>
-      <button type="button" data-index="${index}">
-        View 6 demos →
-      </button>
-      <strong>₹${service.price}</strong>
+      <p>${service.desc}</p>
+      <div class="service-bottom">
+        <span class="price">₹${service.price}</span>
+        <button class="choose-btn" data-service="${service.id}">Choose ↗</button>
+      </div>
     </article>
   `).join("");
 
-  serviceGrid.querySelectorAll("button").forEach(button => {
-    button.addEventListener("click", () => {
-      openDemos(Number(button.dataset.index));
-    });
+  document.querySelectorAll("[data-service]").forEach(button => {
+    button.addEventListener("click", () => selectService(button.dataset.service));
   });
 }
 
-function openDemos(index) {
-  selectedService = services[index];
-  selectedStyle = "";
-
-  modalTitle.textContent = selectedService.name + " — Choose Your Style";
-  modalPrice.textContent = "₹" + selectedService.price;
-
-  demoGrid.innerHTML = demoStyles.map((style, i) => `
-    <button type="button" class="demo-card" data-style="${style}">
-      <div class="demo-art" style="background:
-        ${[
-          "linear-gradient(135deg,#253b80,#11152e)",
-          "linear-gradient(135deg,#8b5cf6,#24103f)",
-          "linear-gradient(135deg,#f97316,#401329)",
-          "linear-gradient(135deg,#06b6d4,#171047)",
-          "linear-gradient(135deg,#a16207,#292019)",
-          "linear-gradient(135deg,#166534,#101d2c)"
-        ][i]}">
-        <div class="art-copy">
-          <small>QUICKSERVE DESIGN</small>
-          ${style}
-        </div>
-      </div>
-      <span class="demo-name">${i + 1}. ${style}</span>
-    </button>
+function renderDemoStyles() {
+  $("demoGrid").innerHTML = styles.map((style, index) => `
+    <button type="button" class="demo-option ${index === selectedStyle ? "active" : ""}"
+      data-style="${index}">${style.name}</button>
   `).join("");
 
-  demoGrid.querySelectorAll(".demo-card").forEach(card => {
-    card.addEventListener("click", () => {
-      demoGrid.querySelectorAll(".demo-card").forEach(item => {
-        item.classList.remove("selected");
-      });
-
-      card.classList.add("selected");
-      selectedStyle = card.dataset.style;
+  document.querySelectorAll("[data-style]").forEach(button => {
+    button.addEventListener("click", () => {
+      selectedStyle = Number(button.dataset.style);
+      renderDemoStyles();
     });
   });
-
-  demoModal.classList.add("open");
 }
 
-closeModal?.addEventListener("click", () => {
-  demoModal.classList.remove("open");
-});
+function selectService(id) {
+  $("selectedService").value = id;
+  $("orderService").value = id;
+  updateOrderPrice();
+  $("studio").scrollIntoView({ behavior: "smooth" });
+}
 
-demoModal?.addEventListener("click", event => {
-  if (event.target === demoModal) {
-    demoModal.classList.remove("open");
-  }
-});
+function updateOrderPrice() {
+  const service = services.find(item => item.id === $("orderService").value);
+  $("orderAmount").value = service ? `₹${service.price}` : "";
+}
 
-modalContinue?.addEventListener("click", () => {
-  if (!selectedService || !selectedStyle) {
-    alert("Please select a design style first.");
-    return;
-  }
+function drawDesign() {
+  const canvas = $("designCanvas");
+  const ctx = canvas.getContext("2d");
+  const style = styles[selectedStyle];
+  const service = services.find(item => item.id === $("selectedService").value);
 
-  serviceSelect.value = selectedService.name;
-  demoStyleInput.value = selectedStyle;
+  const title = $("designTitle").value.trim() || service.name.toUpperCase();
+  const subtitle = $("designSubtitle").value.trim() || "YOUR IDEA. YOUR STYLE.";
+  const prompt = $("designPrompt").value.trim();
 
-  demoModal.classList.remove("open");
+  ctx.fillStyle = style.bg;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  document.getElementById("checkout")?.scrollIntoView({
-    behavior: "smooth"
+  const dark = style.dark;
+  const mainColor = dark ? "#171326" : "#ffffff";
+  const textColor = dark ? "#171326" : "#ffffff";
+
+  const gradient = ctx.createLinearGradient(0, 0, 1080, 1080);
+  gradient.addColorStop(0, style.accent);
+  gradient.addColorStop(1, style.bg);
+  ctx.globalAlpha = 0.22;
+  ctx.fillStyle = gradient;
+  ctx.beginPath();
+  ctx.arc(850, 180, 350, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.globalAlpha = 1;
+
+  ctx.strokeStyle = style.accent;
+  ctx.lineWidth = 5;
+  ctx.strokeRect(55, 55, 970, 970);
+
+  ctx.fillStyle = style.accent;
+  ctx.font = "bold 28px Arial";
+  ctx.fillText("QUICKSERVE  /  CREATIVE STUDIO", 95, 135);
+
+  ctx.globalAlpha = 0.18;
+  ctx.fillStyle = style.accent;
+  ctx.beginPath();
+  ctx.arc(830, 720, 230, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.globalAlpha = 1;
+
+  ctx.fillStyle = textColor;
+  ctx.font = "bold 82px Arial";
+
+  const words = title.split(" ");
+  let lines = [];
+  let line = "";
+
+  words.forEach(word => {
+    const test = line ? line + " " + word : word;
+    if (ctx.measureText(test).width > 850 && line) {
+      lines.push(line);
+      line = word;
+    } else {
+      line = test;
+    }
   });
-});
+  if (line) lines.push(line);
 
-orderForm?.addEventListener("submit", async event => {
+  let y = 420;
+  lines.slice(0, 3).forEach(item => {
+    ctx.fillText(item, 95, y);
+    y += 105;
+  });
+
+  ctx.fillStyle = style.accent;
+  ctx.fillRect(95, y + 5, 170, 8);
+
+  ctx.fillStyle = textColor;
+  ctx.font = "32px Arial";
+  ctx.fillText(subtitle.slice(0, 55), 95, y + 100);
+
+  ctx.font = "bold 23px Arial";
+  ctx.fillStyle = style.accent;
+  ctx.fillText(service.name.toUpperCase(), 95, 900);
+
+  ctx.font = "20px Arial";
+  ctx.fillStyle = textColor;
+  ctx.fillText("DESIGN  •  CREATE  •  GROW", 95, 950);
+
+  if (prompt) {
+    ctx.globalAlpha = 0.7;
+    ctx.font = "18px Arial";
+    ctx.fillStyle = textColor;
+    ctx.fillText("CUSTOM CONCEPT PREVIEW", 95, 990);
+    ctx.globalAlpha = 1;
+  }
+
+  designReady = true;
+  $("downloadBtn").disabled = false;
+}
+
+function downloadDesign() {
+  if (!designReady) return;
+  const link = document.createElement("a");
+  link.download = "quickserve-design.png";
+  link.href = $("designCanvas").toDataURL("image/png");
+  link.click();
+}
+
+async function createOrder(event) {
   event.preventDefault();
 
-  if (!selectedService || !selectedStyle) {
-    formMessage.textContent = "Please choose a service and design demo first.";
+  const name = $("customerName").value.trim();
+  const whatsapp = $("whatsapp").value.trim();
+  const service = services.find(item => item.id === $("orderService").value);
+  const requirements = $("requirements").value.trim();
+
+  if (!service) {
+    alert("Please select a service.");
     return;
   }
 
-  const customer = customerInput.value.trim();
-  const email = emailInput.value.trim();
-  const details = detailsInput.value.trim();
-
-  if (!customer || !email || !details) {
-    formMessage.textContent = "Please complete all required fields.";
+  if (!/^[0-9+\-\s]{8,15}$/.test(whatsapp)) {
+    alert("Please enter a valid contact number.");
     return;
   }
 
-  currentOrderId = createId();
-
-  const order = {
-    orderId: currentOrderId,
-    service: selectedService.name,
-    style: selectedStyle,
-    customer,
-    email,
-    details,
-    amount: selectedService.price,
-    paymentStatus: "pending",
-    createdAt: serverTimestamp()
-  };
-
-  const submitButton = orderForm.querySelector('button[type="submit"]');
-  submitButton.disabled = true;
-  submitButton.textContent = "Creating order...";
+  const button = $("placeOrderBtn");
+  button.disabled = true;
+  button.textContent = "Creating order...";
 
   try {
-    await setDoc(doc(db, "orders", currentOrderId), order);
+    const order = await addDoc(collection(db, "orders"), {
+      customerName: name,
+      whatsapp,
+      serviceId: service.id,
+      serviceName: service.name,
+      requirements,
+      amount: service.price,
+      paymentStatus: "pending",
+      orderStatus: "pending_verification",
+      createdAt: serverTimestamp()
+    });
 
-    paymentAmount.textContent = "₹" + selectedService.price;
-    orderReference.textContent = "Order ID: " + currentOrderId;
+    currentOrderId = order.id;
+    currentOrderAmount = service.price;
 
-    paymentSection.hidden = false;
-    formMessage.textContent =
-      "Order created. Complete payment and submit your transaction reference.";
-
-    paymentSection.scrollIntoView({ behavior: "smooth" });
-
+    $("paymentAmount").textContent = `₹${service.price}`;
+    $("paymentPanel").classList.remove("hidden");
+    $("orderStatus").textContent = `Order reference: ${order.id}`;
+    $("paymentPanel").scrollIntoView({ behavior: "smooth" });
   } catch (error) {
     console.error(error);
-    formMessage.textContent =
-      "Could not create order. Please check Firebase settings and try again.";
+    alert("Order could not be saved. Please check your internet and Firebase setup.");
   } finally {
-    submitButton.disabled = false;
-    submitButton.textContent = "Continue to Payment";
+    button.disabled = false;
+    button.textContent = "Continue to Payment →";
   }
-});
+}
 
-copyUpi?.addEventListener("click", async () => {
-  try {
-    await navigator.clipboard.writeText(UPI_ID);
-    copyUpi.textContent = "Copied!";
-  } catch {
-    copyUpi.textContent = "Copy unavailable";
-  }
-});
-
-submitPayment?.addEventListener("click", async () => {
-  const reference = transactionId.value.trim();
+async function submitPayment(event) {
+  event.preventDefault();
 
   if (!currentOrderId) {
     alert("Please create an order first.");
     return;
   }
 
-  if (reference.length < 6) {
-    alert("Please enter a valid transaction reference.");
+  const transactionId = $("transactionId").value.trim();
+  if (transactionId.length < 5) {
+    alert("Please enter a valid transaction/reference ID.");
     return;
   }
 
-  submitPayment.disabled = true;
-  submitPayment.textContent = "Submitting...";
+  const button = $("paymentForm").querySelector("button");
+  button.disabled = true;
+  button.textContent = "Submitting...";
 
   try {
     await addDoc(collection(db, "paymentSubmissions"), {
       orderId: currentOrderId,
-      transactionId: reference,
+      transactionId,
+      amount: currentOrderAmount,
       verificationStatus: "pending",
       submittedAt: serverTimestamp()
     });
 
-    alert(
-      "Payment reference submitted. Your order is pending payment verification."
-    );
+    $("orderStatus").textContent =
+      "Payment details submitted. Your payment is pending manual verification. Keep your order reference safe.";
 
-    transactionId.value = "";
-    submitPayment.textContent = "Reference Submitted";
-
+    $("paymentForm").reset();
   } catch (error) {
     console.error(error);
-    alert("Could not submit reference. Please try again.");
-    submitPayment.disabled = false;
-    submitPayment.textContent = "Submit Payment Reference";
+    alert("Payment details could not be submitted. Please try again.");
+  } finally {
+    button.disabled = false;
+    button.textContent = "Submit Payment Details";
   }
-});
+}
 
-renderServices();
-      
+function init() {
+  fillServiceSelect($("selectedService"));
+  fillServiceSelect($("orderService"));
+  renderServices();
+  renderDemoStyles();
+  updateOrderPrice();
+
+  $("selectedService").addEventListener("change", () => {
+    $("orderService").value = $("selectedService").value;
+    updateOrderPrice();
+    designReady = false;
+    $("downloadBtn").disabled = true;
+  });
+
+  $("orderService").addEventListener("change", updateOrderPrice);
+  $("generateBtn").addEventListener("click", drawDesign);
+  $("downloadBtn").addEventListener("click", downloadDesign);
+  $("orderForm").addEventListener("submit", createOrder);
+  $("paymentForm").addEventListener("submit", submitPayment);
+
+  $("year").textContent = new Date().getFullYear();
+}
+
+init();
