@@ -26,6 +26,7 @@
     <p>Posts, banners, thumbnails, resumes, QR codes and more — order your creative service in a few simple steps.</p>
     <a href="#services" class="btn btn-primary">Explore Services ↗</a>
   </div>
+
   <div class="hero-art">
     <div class="orb orb-one"></div>
     <div class="orb orb-two"></div>
@@ -60,10 +61,26 @@
       <h2>How QuickServe works</h2>
     </div>
     <div class="steps-grid">
-      <article class="step"><b>01</b><h3>Choose a service</h3><p>Select the service you need.</p></article>
-      <article class="step"><b>02</b><h3>Choose a style</h3><p>Explore sample layouts and choose one.</p></article>
-      <article class="step"><b>03</b><h3>Submit your order</h3><p>Enter your details and requirements.</p></article>
-      <article class="step"><b>04</b><h3>Payment & delivery</h3><p>Submit payment details. Delivery follows verification.</p></article>
+      <article class="step">
+        <b>01</b>
+        <h3>Choose a service</h3>
+        <p>Select the service you need.</p>
+      </article>
+      <article class="step">
+        <b>02</b>
+        <h3>Choose a style</h3>
+        <p>Explore sample layouts and choose one.</p>
+      </article>
+      <article class="step">
+        <b>03</b>
+        <h3>Submit your order</h3>
+        <p>Enter your name and requirements.</p>
+      </article>
+      <article class="step">
+        <b>04</b>
+        <h3>Payment & delivery</h3>
+        <p>Submit payment details. Delivery follows verification.</p>
+      </article>
     </div>
   </section>
 
@@ -73,25 +90,37 @@
       <h2 id="galleryTitle">Choose your style</h2>
       <p>These are sample layout previews, not finished custom designs.</p>
     </div>
+
     <div id="stylesGrid" class="styles-grid"></div>
+
     <div class="preview-area">
       <h3>Selected sample preview</h3>
       <canvas id="previewCanvas" width="900" height="560"></canvas>
       <p class="watermark-note">PREVIEW ONLY • QUICKSERVE</p>
     </div>
+
     <div class="order-box">
       <h3>Submit your order</h3>
       <p id="selectedServiceInfo"></p>
+
       <form id="orderForm">
-        <label>Your name</label>
-        <input id="customerName" required maxlength="80" placeholder="Enter your name">
-        <label>WhatsApp number</label>
-        <input id="whatsapp" required maxlength="20" placeholder="Enter contact number">
-        <label>Your requirements / prompt</label>
-        <textarea id="requirements" required maxlength="2000" rows="5" placeholder="Describe exactly what you want. Include text, colours, size and other details."></textarea>
-        <button class="btn btn-primary full" type="submit">Submit Order</button>
+        <label for="customerName">Your name</label>
+        <input id="customerName" required maxlength="80"
+          placeholder="Enter your name">
+
+        <label for="requirements">Your requirements / prompt</label>
+        <textarea id="requirements" required maxlength="2000"
+          rows="5"
+          placeholder="Describe exactly what you want. Include text, colours, size and other details."></textarea>
+
+        <button class="btn btn-primary full" type="submit">
+          Submit Order
+        </button>
       </form>
-      <p class="small-note">You must sign in with Google before placing an order.</p>
+
+      <p class="small-note">
+        You must sign in with Google before placing an order.
+      </p>
     </div>
   </section>
 
@@ -100,14 +129,26 @@
       <span class="eyebrow">PAYMENT SUBMISSION</span>
       <h2>Complete your payment</h2>
       <p id="paymentOrderInfo"></p>
+
       <img src="famx-qr.png" alt="UPI payment QR code" class="qr-image">
-      <p class="small-note">Scan this QR using your UPI app. Verify the receiver details before paying.</p>
+
+      <p class="small-note">
+        Scan this QR using your UPI app. Verify the receiver details before paying.
+      </p>
+
       <form id="paymentForm">
-        <label>UPI transaction ID / UTR</label>
-        <input id="transactionId" required maxlength="100" placeholder="Enter transaction reference">
-        <button class="btn btn-primary full" type="submit">Submit Payment Details</button>
+        <label for="transactionId">UPI transaction ID / UTR</label>
+        <input id="transactionId" required maxlength="100"
+          placeholder="Enter transaction reference">
+
+        <button class="btn btn-primary full" type="submit">
+          Submit Payment Details
+        </button>
       </form>
-      <p class="small-note">Submitting a transaction ID does not confirm payment. Admin will check the payment manually.</p>
+
+      <p class="small-note">
+        Payment is subject to manual admin verification.
+      </p>
     </div>
   </section>
 
@@ -140,4 +181,4 @@
 
 <script type="module" src="app.js"></script>
 </body>
-</html>
+      </html>
