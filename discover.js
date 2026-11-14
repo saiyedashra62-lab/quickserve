@@ -15,141 +15,171 @@ import {
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
 
-// ELEMENTS
-const coursesGrid = document.getElementById("coursesGrid");
-const toolsGrid = document.getElementById("toolsGrid");
-const blogsGrid = document.getElementById("blogsGrid");
-const searchInput = document.getElementById("courseSearch");
+const $ = id => document.getElementById(id);
 
-const suggestForm = document.getElementById("suggestForm");
-const suggestMessage = document.getElementById("suggestMessage");
+const coursesGrid = $("coursesGrid");
+const premiumGrid = $("premiumCoursesGrid");
+const toolsGrid = $("toolsGrid");
+const blogsGrid = $("blogsGrid");
+const searchInput = $("courseSearch");
+const courseFilter = $("courseFilter");
 
-let coursesData = [];
-let toolsData = [];
 let currentUser = null;
-let courseFilter = "all";
-let toolFilter = "all";
+let allCourses = [];
+let allTools = [];
+let activeCategory = "all";
 
-// AUTH
 onAuthStateChanged(auth, user => {
   currentUser = user;
 });
 
-// HELPERS
-function makeElement(tag, className, text = "") {
-  const element = document.createElement(tag);
-  if (className) element.className = className;
-  element.textContent = text;
-  return element;
-}
-
 function safeUrl(value) {
   try {
     const url = new URL(value);
-    return ["https:", "http:"].includes(url.protocol) ? url.href : "";
+    return ["https:", "http:"].includes(url.protocol)
+      ? url.href
+      : "";
   } catch {
     return "";
   }
 }
 
-function createLink(url, label) {
-  const safe = safeUrl(url);
-  if (!safe) return null;
-
-  const link = makeElement("a", "card-link", label);
-  link.href = safe;
-  link.target = "_blank";
-  link.rel = "noopener noreferrer";
-  return link;
+function element(tag, className, text) {
+  const el = document.createElement(tag);
+  if (className) el.className = className;
+  if (text !== undefined) el.textContent = text;
+  return el;
 }
 
-function showMessage(container, message) {
-  if (container) container.textContent = message;
+function message(container, text) {
+  if (!container) return;
+  container.replaceChildren(element("p", "empty-state", text));
 }
 
-// COURSES
+function getCourseType(course) {
+  const raw = String(course.type || course.access || "").toLowerCase();
+
+  if (raw === "free" || raw === "premium") return raw;
+
+  // Keep the known beginner course free.
+  return course.id === "ui-ux-beginners" ? "free" : "premium";
+}
+
+function courseLink(course) {
+  return `course.html?id=${encodeURIComponent(course.id)}`;
+}
+
+function makeCourseCard(course) {
+  const card = element("article", "course-card");
+
+  const cover = element("div", "course-cover");
+  const imageUrl = safeUrl(course.image || course.thumbnail);
+
+  if (imageUrl) {
+    const img = element("img");
+    img.src = imageUrl;
+    img.alt = course.title || "Course cover";
+    img.loading = "lazy";
+    cover.append(img);
+  } else {
+    cover.append(element("span", "cover-symbol", "✦"));
+  }
+
+  const type = getCourseType(course);
+  cover.append(
+    element(
+      "span",
+      `course-badge ${type}`,
+      type === "premium" ? "PREMIUM" : "FREE"
+    )
+  );
+
+  const body = element("div", "course-card-body");
+
+  body.append(
+    element("span", "course-category", course.category || "General"),
+    element("h3", "", course.title || course.name || "Untitled Course"),
+    element("p", "", course.description || "Explore this course.")
+  );
+
+  const meta = element("div", "course-meta");
+  meta.append(
+    element("span", "", course.level || "Beginner"),
+    element("span", "", course.duration || "Self paced")
+  );
+  body.append(meta);
+
+  const link = element(
+    "a",
+    "card-link",
+    type === "premium" ? "View Premium Course →" : "Start Learning →"
+  );
+  link.href = courseLink(course);
+  body.append(link);
+
+  card.append(cover, body);
+  return card;
+}
+
 function renderCourses() {
   if (!coursesGrid) return;
 
   coursesGrid.replaceChildren();
 
-  const search = (searchInput?.value || "").toLowerCase();
+  const search = (searchInput?.value || "").trim().toLowerCase();
+  const type = courseFilter?.value || "all";
 
-  const filtered = coursesData.filter(course => {
-    const type = (course.type || course.access || "free").toLowerCase();
+  const filtered = allCourses.filter(course => {
+    const courseType = getCourseType(course);
+    const category = String(course.category || "").toLowerCase();
 
-    const matchesType =
-      courseFilter === "all" || type === courseFilter;
+    const matchesSearch = [
+      course.title,
+      course.name,
+      course.description,
+      course.category
+    ].join(" ").toLowerCase().includes(search);
 
-    const matchesSearch =
-      `${course.title || course.name || ""} ${course.description || ""} ${course.category || ""}`
-        .toLowerCase()
-        .includes(search);
+    const matchesType = type === "all" || courseType === type;
+    const matchesCategory =
+      activeCategory === "all" ||
+      category.includes(activeCategory);
 
-    return matchesType && matchesSearch;
+    return matchesSearch && matchesType && matchesCategory;
   });
 
   if (!filtered.length) {
-    coursesGrid.append(
-      makeElement("p", "empty-state", "No courses found. New courses coming soon!")
-    );
-    return;
+    message(coursesGrid, "No courses found. Try another search.");
+  } else {
+    filtered.forEach(course => {
+      coursesGrid.append(makeCourseCard(course));
+    });
   }
 
-  filtered.forEach(course => {
-    const card = makeElement("article", "course-card");
+  if (premiumGrid) {
+    premiumGrid.replaceChildren();
 
-    const cover = makeElement("div", "course-cover");
-    const imageUrl = safeUrl(course.image || course.thumbnail);
+    const premiumCourses = allCourses.filter(
+      course => getCourseType(course) === "premium"
+    );
 
-    if (imageUrl) {
-      const image = document.createElement("img");
-      image.src = imageUrl;
-      image.alt = course.title || "Course";
-      image.loading = "lazy";
-      cover.append(image);
+    if (!premiumCourses.length) {
+      message(premiumGrid, "Premium courses are being prepared.");
     } else {
-      cover.append(makeElement("span", "cover-symbol", "✦"));
+      premiumCourses.forEach(course => {
+        premiumGrid.append(makeCourseCard(course));
+      });
     }
+  }
 
-    const type = (course.type || course.access || "free").toLowerCase();
-    cover.append(
-      makeElement(
-        "span",
-        `course-badge ${type}`,
-        type === "premium" ? "PREMIUM" : "FREE"
-      )
-    );
-
-    const body = makeElement("div", "course-card-body");
-
-    body.append(
-      makeElement("span", "course-category", course.category || "General"),
-      makeElement("h3", "", course.title || course.name || "Untitled Course"),
-      makeElement("p", "", course.description || "Explore this course.")
-    );
-
-    const meta = makeElement("div", "course-meta");
-    meta.append(
-      makeElement("span", "", course.level || "Beginner"),
-      makeElement("span", "", course.lessons || "Lessons available"),
-      makeElement("span", "", course.duration || "Self paced")
-    );
-
-    body.append(meta);
-
-    const link = createLink(course.url, "Explore Course ↗");
-    if (link) body.append(link);
-
-    card.append(cover, body);
-    coursesGrid.append(card);
-  });
+  const empty = $("courseEmpty");
+  if (empty) empty.classList.toggle("hidden", filtered.length > 0);
 }
 
 async function loadCourses() {
   if (!coursesGrid) return;
 
-  showMessage(coursesGrid, "Loading courses...");
+  message(coursesGrid, "Loading courses...");
 
   try {
     const q = query(
@@ -158,24 +188,32 @@ async function loadCourses() {
     );
 
     const snapshot = await getDocs(q);
-    coursesData = snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
+
+    allCourses = snapshot.docs.map(item => ({
+      id: item.id,
+      ...item.data()
     }));
 
     renderCourses();
   } catch (error) {
     console.error("Courses error:", error);
-    showMessage(coursesGrid, "Unable to load courses. Please try again later.");
+    message(coursesGrid, "Unable to load courses. Please try again.");
+    if (premiumGrid) {
+      message(premiumGrid, "Premium courses could not be loaded.");
+    }
   }
 }
 
-// COURSE FILTERS
-document.querySelectorAll(".course-filter").forEach(button => {
-  button.addEventListener("click", () => {
-    courseFilter = button.dataset.courseType || "all";
+// Search and price filters
+searchInput?.addEventListener("input", renderCourses);
+courseFilter?.addEventListener("change", renderCourses);
 
-    document.querySelectorAll(".course-filter").forEach(item => {
+// Category filters
+document.querySelectorAll(".category-chip").forEach(button => {
+  button.addEventListener("click", () => {
+    activeCategory = button.dataset.category || "all";
+
+    document.querySelectorAll(".category-chip").forEach(item => {
       item.classList.remove("active");
     });
 
@@ -184,43 +222,35 @@ document.querySelectorAll(".course-filter").forEach(button => {
   });
 });
 
-searchInput?.addEventListener("input", renderCourses);
-
-// TOOLS
+// Tools
 function renderTools() {
   if (!toolsGrid) return;
 
   toolsGrid.replaceChildren();
 
-  const filtered = toolsData.filter(tool => {
-    const category = (tool.category || "").toLowerCase();
-    const price = (tool.price || tool.type || "free").toLowerCase();
-
-    if (toolFilter === "ai") return category.includes("ai");
-    if (toolFilter === "free") return price.includes("free");
-    if (toolFilter === "premium") return price.includes("premium");
-
-    return true;
-  });
-
-  if (!filtered.length) {
-    toolsGrid.append(
-      makeElement("p", "empty-state", "No tools available in this category.")
-    );
+  if (!allTools.length) {
+    message(toolsGrid, "Creative tools are coming soon.");
     return;
   }
 
-  filtered.forEach(tool => {
-    const card = makeElement("article", "tool-card");
+  allTools.forEach(tool => {
+    const card = element("article", "tool-card");
 
     card.append(
-      makeElement("span", "tool-category", tool.category || "Tool"),
-      makeElement("h3", "", tool.name || tool.title || "Untitled Tool"),
-      makeElement("p", "", tool.description || "Explore this tool.")
+      element("span", "tool-category", tool.category || "Creative Tool"),
+      element("h3", "", tool.name || tool.title || "Untitled Tool"),
+      element("p", "", tool.description || "Explore this tool.")
     );
 
-    const link = createLink(tool.url, "Visit Tool ↗");
-    if (link) card.append(link);
+    const url = safeUrl(tool.url);
+
+    if (url) {
+      const link = element("a", "card-link", "Open Tool →");
+      link.href = url;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      card.append(link);
+    }
 
     toolsGrid.append(card);
   });
@@ -229,7 +259,7 @@ function renderTools() {
 async function loadTools() {
   if (!toolsGrid) return;
 
-  showMessage(toolsGrid, "Loading tools...");
+  message(toolsGrid, "Loading tools...");
 
   try {
     const q = query(
@@ -238,36 +268,24 @@ async function loadTools() {
     );
 
     const snapshot = await getDocs(q);
-    toolsData = snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
+
+    allTools = snapshot.docs.map(item => ({
+      id: item.id,
+      ...item.data()
     }));
 
     renderTools();
   } catch (error) {
     console.error("Tools error:", error);
-    showMessage(toolsGrid, "Unable to load tools.");
+    message(toolsGrid, "Unable to load tools.");
   }
 }
 
-document.querySelectorAll(".filter").forEach(button => {
-  button.addEventListener("click", () => {
-    toolFilter = button.dataset.category || "all";
-
-    document.querySelectorAll(".filter").forEach(item => {
-      item.classList.remove("active");
-    });
-
-    button.classList.add("active");
-    renderTools();
-  });
-});
-
-// BLOGS
+// Blogs
 async function loadBlogs() {
   if (!blogsGrid) return;
 
-  showMessage(blogsGrid, "Loading articles...");
+  message(blogsGrid, "Loading articles...");
 
   try {
     const q = query(
@@ -279,106 +297,111 @@ async function loadBlogs() {
     blogsGrid.replaceChildren();
 
     if (snapshot.empty) {
-      blogsGrid.append(
-        makeElement("p", "empty-state", "Articles coming soon.")
-      );
+      message(blogsGrid, "New articles are coming soon.");
       return;
     }
 
-    snapshot.forEach(documentSnapshot => {
-      const blog = documentSnapshot.data();
-      const card = makeElement("article", "blog-card");
+    snapshot.forEach(item => {
+      const blog = item.data();
+      const card = element("article", "blog-card");
+
+      const imageUrl = safeUrl(blog.image || blog.thumbnail);
+
+      if (imageUrl) {
+        const img = element("img");
+        img.src = imageUrl;
+        img.alt = blog.title || "Article image";
+        img.loading = "lazy";
+        card.append(img);
+      }
 
       card.append(
-        makeElement("span", "blog-category", blog.category || "QuickServe Blog"),
-        makeElement("h3", "", blog.title || "Untitled Article"),
-        makeElement("p", "", blog.excerpt || blog.description || "Read our latest article.")
+        element("span", "blog-category", blog.category || "QuickServe Blog"),
+        element("h3", "", blog.title || "Untitled Article"),
+        element(
+          "p",
+          "",
+          blog.excerpt || blog.description || "Read our latest article."
+        )
       );
 
       if (blog.content) {
-        const content = makeElement("p", "blog-full-content", blog.content);
+        const content = element("p", "blog-full-content", blog.content);
         content.hidden = true;
 
-        const readButton = makeElement("button", "read-more", "Read More");
-        readButton.type = "button";
+        const button = element("button", "read-more", "Read More");
+        button.type = "button";
 
-        readButton.addEventListener("click", () => {
+        button.addEventListener("click", () => {
           content.hidden = !content.hidden;
-          readButton.textContent = content.hidden ? "Read More" : "Show Less";
+          button.textContent = content.hidden ? "Read More" : "Show Less";
         });
 
-        card.append(readButton, content);
+        card.append(button, content);
       }
 
       blogsGrid.append(card);
     });
   } catch (error) {
     console.error("Blogs error:", error);
-    showMessage(blogsGrid, "Unable to load articles.");
+    message(blogsGrid, "Unable to load articles.");
   }
 }
 
-// TOOL SUGGESTION FORM
-suggestForm?.addEventListener("submit", async event => {
-  event.preventDefault();
+// Course and tool suggestion
+const suggestForm = $("suggestForm");
 
-  const name = document.getElementById("toolName")?.value.trim();
-  const url = safeUrl(document.getElementById("toolUrl")?.value.trim());
-  const description = document.getElementById("toolDescription")?.value.trim();
+if (suggestForm) {
+  suggestForm.addEventListener("submit", async event => {
+    event.preventDefault();
 
-  if (!name || !url || !description) {
-    showMessage(suggestMessage, "Please fill all fields with a valid URL.");
-    return;
-  }
+    const input = $("suggestionInput");
+    const suggestion = input?.value.trim();
 
-  const submitButton = document.getElementById("suggestBtn");
-  if (submitButton) submitButton.disabled = true;
+    if (!suggestion) return;
 
-  try {
-    if (!currentUser) {
-      const result = await signInWithPopup(auth, googleProvider);
-      currentUser = result.user;
+    const button = suggestForm.querySelector("button");
+    button.disabled = true;
+    button.textContent = "Submitting...";
+
+    try {
+      if (!currentUser) {
+        const result = await signInWithPopup(auth, googleProvider);
+        currentUser = result.user;
+      }
+
+      await addDoc(collection(db, "toolSubmissions"), {
+        uid: currentUser.uid,
+        email: currentUser.email || "",
+        name: suggestion,
+        description: suggestion,
+        url: "",
+        status: "pending",
+        createdAt: serverTimestamp()
+      });
+
+      suggestForm.reset();
+      button.textContent = "Suggestion Sent ✓";
+    } catch (error) {
+      console.error("Suggestion error:", error);
+      button.textContent = "Try Again";
+      alert("Suggestion could not be submitted. Please check your login and Firestore rules.");
+    } finally {
+      button.disabled = false;
+
+      setTimeout(() => {
+        button.textContent = "Send Suggestion →";
+      }, 2500);
     }
-
-    await addDoc(collection(db, "toolSubmissions"), {
-      uid: currentUser.uid,
-      name,
-      url,
-      description,
-      status: "pending",
-      createdAt: serverTimestamp()
-    });
-
-    suggestForm.reset();
-    showMessage(suggestMessage, "Suggestion submitted successfully!");
-
-  } catch (error) {
-    console.error("Suggestion error:", error);
-    showMessage(suggestMessage, "Could not submit. Please sign in and try again.");
-  } finally {
-    if (submitButton) submitButton.disabled = false;
-  }
-});
-
-// MOBILE SIDEBAR
-const menuToggle = document.getElementById("menuToggle");
-const sidebar = document.querySelector(".sidebar");
-
-menuToggle?.addEventListener("click", () => {
-  sidebar?.classList.toggle("open");
-});
-
-document.querySelectorAll(".sidebar a").forEach(link => {
-  link.addEventListener("click", () => {
-    sidebar?.classList.remove("open");
   });
-});
+}
 
-// FOOTER YEAR
-const year = document.getElementById("year");
+// Footer year
+const year = $("year");
 if (year) year.textContent = new Date().getFullYear();
 
-// START
+// Start
 loadCourses();
 loadTools();
 loadBlogs();
+    
