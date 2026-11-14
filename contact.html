@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Contact QuickServe for questions, support and service enquiries.">
+  <title>Contact Us | QuickServe</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="contact.css">
+</head>
+
+<body>
+
+<header class="topbar">
+  <a href="index.html" class="brand">
+    <span class="brand-logo">Q</span>
+    <span>QuickServe</span>
+  </a>
+
+  <nav class="top-nav">
+    <a href="index.html">Home</a>
+    <a href="discover.html">Discover</a>
+    <a href="blogs.html">Blogs</a>
+    <a href="contact.html" class="active">Contact</a>
+  </nav>
+
+  <a href="profile.html" class="profile-link">My Profile</a>
+</header>
+
+<aside class="sidebar">
+  <div class="sidebar-heading">MENU</div>
+  <a href="index.html">⌂ Home</a>
+  <a href="discover.html">✧ Discover</a>
+  <a href="my-learning.html">▣ My Learning</a>
+  <a href="my-orders.html">▤ My Orders</a>
+  <a href="discover.html">◈ All Courses</a>
+  <a href="tools.html">⚒ Tools</a>
+  <a href="blogs.html">▤ Articles & Blogs</a>
+  <a href="profile.html">♙ Profile</a>
+  <a href="contact.html" class="active">✉ Contact Us</a>
+</aside>
+
+<main class="contact-page">
+
+  <section class="contact-hero">
+    <span>WE ARE HERE TO HELP</span>
+    <h1>Let's start a <strong>conversation.</strong></h1>
+    <p>
+      Have a question, need assistance or want to know more
+      about QuickServe? Send us a message.
+    </p>
+  </section>
+
+  <section class="contact-layout">
+
+    <div class="contact-info">
+      <span class="section-label">GET IN TOUCH</span>
+      <h2>We'd love to hear from you.</h2>
+      <p>
+        Share your question with us. Our team will review your
+        message and get back to you.
+      </p>
+
+      <div class="contact-info-card">
+        <div class="contact-icon">✉</div>
+        <div>
+          <h3>Email Support</h3>
+          <p>Use the contact form to send us your message.</p>
+        </div>
+      </div>
+
+      <div class="contact-info-card">
+        <div class="contact-icon">◈</div>
+        <div>
+          <h3>Courses & Learning</h3>
+          <p>Questions about courses, lessons and learning access.</p>
+        </div>
+      </div>
+
+      <div class="contact-info-card">
+        <div class="contact-icon">◇</div>
+        <div>
+          <h3>Services & Orders</h3>
+          <p>Need help with an order or a digital service?</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="contact-form-card">
+      <h2>Send us a message</h2>
+      <p>Fill in the details below.</p>
+
+      <form id="contactForm">
+
+        <label for="contactName">Full Name</label>
+        <input
+          type="text"
+          id="contactName"
+          placeholder="Enter your name"
+          required
+          maxlength="80"
+        >
+
+        <label for="contactEmail">Email Address</label>
+        <input
+          type="email"
+          id="contactEmail"
+          placeholder="Enter your email"
+          required
+          maxlength="120"
+        >
+
+        <label for="contactSubject">Subject</label>
+        <select id="contactSubject" required>
+          <option value="">Select a subject</option>
+          <option value="General Enquiry">General Enquiry</option>
+          <option value="Course Support">Course Support</option>
+          <option value="Order Support">Order Support</option>
+          <option value="Technical Issue">Technical Issue</option>
+          <option value="Other">Other</option>
+        </select>
+
+        <label for="contactMessage">Your Message</label>
+        <textarea
+          id="contactMessage"
+          rows="5"
+          placeholder="Write your message..."
+          required
+          maxlength="2000"
+        ></textarea>
+
+        <button type="submit" id="contactSubmit">
+          Send Message →
+        </button>
+
+        <p id="contactStatus" role="status" aria-live="polite"></p>
+
+      </form>
+    </div>
+
+  </section>
+
+  <section class="contact-bottom">
+    <h2>Explore more with QuickServe</h2>
+    <p>Discover courses, tools and resources in one place.</p>
+    <a href="discover.html">Explore QuickServe →</a>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>© <span id="year"></span> QuickServe. All rights reserved.</p>
+  <div>
+    <a href="index.html">Home</a>
+    <a href="blogs.html">Blogs</a>
+    <a href="discover.html">Courses</a>
+  </div>
+</footer>
+
+<script type="module" src="contact.js"></script>
+</body>
+</html>
