@@ -1,0 +1,159 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080c19">
+  <title>Creative Tools | QuickServe</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="tools.css">
+</head>
+<body>
+
+  <header class="topbar">
+    <a href="index.html" class="brand">
+      <span class="brand-icon">Q</span>
+      <span>QuickServe</span>
+    </a>
+    <nav class="top-nav">
+      <a href="index.html">Home</a>
+      <a href="discover.html">Discover</a>
+      <a href="blogs.html">Blogs</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <a href="profile.html" class="profile-link">My Profile</a>
+  </header>
+
+  <aside class="sidebar">
+    <div class="sidebar-label">MENU</div>
+    <a href="index.html">⌂ <span>Home</span></a>
+    <a href="discover.html">◈ <span>Discover</span></a>
+    <a href="my-learning.html">▣ <span>My Learning</span></a>
+    <a href="my-orders.html">▤ <span>My Orders</span></a>
+    <a href="discover.html">▦ <span>All Courses</span></a>
+    <a href="tools.html" class="active">⚙ <span>Tools</span></a>
+    <a href="blogs.html">▧ <span>Articles & Blogs</span></a>
+    <a href="profile.html">◉ <span>Profile</span></a>
+    <a href="contact.html">✉ <span>Contact Us</span></a>
+
+    <div class="sidebar-promo">
+      <h3>Create More!</h3>
+      <p>Explore tools for your next big idea.</p>
+      <a href="discover.html">Explore More →</a>
+    </div>
+  </aside>
+
+  <main class="tools-main">
+
+    <section class="tools-hero">
+      <span class="tools-eyebrow">YOUR DIGITAL WORKSPACE</span>
+      <h1>Powerful Tools.<br><span>Simple Results.</span></h1>
+      <p>
+        Explore useful digital tools designed to make your everyday
+        creative and business tasks easier.
+      </p>
+
+      <div class="tools-search">
+        <span>⌕</span>
+        <input
+          type="search"
+          id="toolSearch"
+          placeholder="Search tools..."
+          aria-label="Search tools"
+        >
+      </div>
+    </section>
+
+    <section class="tools-section">
+      <div class="tools-section-heading">
+        <div>
+          <h2>Explore Tools</h2>
+          <p>Choose a tool and get started.</p>
+        </div>
+        <span id="toolsCount">0 Tools</span>
+      </div>
+
+      <div class="tools-filters">
+        <button class="tool-filter active" data-filter="all">All Tools</button>
+        <button class="tool-filter" data-filter="business">Business</button>
+        <button class="tool-filter" data-filter="design">Design</button>
+        <button class="tool-filter" data-filter="productivity">Productivity</button>
+      </div>
+
+      <div id="toolsGrid" class="tools-grid">
+
+        <article class="tool-card" data-category="business">
+          <div class="tool-card-icon">▤</div>
+          <span class="tool-tag">BUSINESS</span>
+          <h3>Invoice Maker</h3>
+          <p>Create professional invoices for your business and clients.</p>
+          <a href="https://saiyedashra62-lab.github.io/invoice-maker/" target="_blank" rel="noopener noreferrer">Open Tool →</a>
+        </article>
+
+        <article class="tool-card" data-category="productivity">
+          <div class="tool-card-icon">▦</div>
+          <span class="tool-tag">PRODUCTIVITY</span>
+          <h3>QR Code Maker</h3>
+          <p>Create QR codes for links and useful information.</p>
+          <a href="https://www.qrcode-monkey.com/" target="_blank" rel="noopener noreferrer">Open Tool →</a>
+        </article>
+
+        <article class="tool-card" data-category="business">
+          <div class="tool-card-icon">▣</div>
+          <span class="tool-tag">BUSINESS</span>
+          <h3>Resume Maker</h3>
+          <p>Build a clean and professional resume for your profile.</p>
+          <a href="discover.html">Explore Resume Tools →</a>
+        </article>
+
+        <article class="tool-card" data-category="design">
+          <div class="tool-card-icon">✧</div>
+          <span class="tool-tag">DESIGN</span>
+          <h3>Design Workspace</h3>
+          <p>Create social media graphics, posters and visual content.</p>
+          <a href="https://www.canva.com/" target="_blank" rel="noopener noreferrer">Open Tool →</a>
+        </article>
+
+        <article class="tool-card" data-category="business">
+          <div class="tool-card-icon">▧</div>
+          <span class="tool-tag">BUSINESS</span>
+          <h3>Digital Visiting Card</h3>
+          <p>Prepare a digital identity card for your business.</p>
+          <a href="discover.html">Explore →</a>
+        </article>
+
+        <article class="tool-card" data-category="productivity">
+          <div class="tool-card-icon">◷</div>
+          <span class="tool-tag">PRODUCTIVITY</span>
+          <h3>Text & Notes</h3>
+          <p>Organise ideas and prepare your content.</p>
+          <a href="https://docs.google.com/" target="_blank" rel="noopener noreferrer">Open Tool →</a>
+        </article>
+
+      </div>
+
+      <div id="toolsEmpty" class="tools-empty" hidden>
+        <h3>No tools found</h3>
+        <p>Try searching with another keyword.</p>
+      </div>
+    </section>
+
+    <section class="tools-banner">
+      <div>
+        <span>KEEP CREATING</span>
+        <h2>Your next idea starts here.</h2>
+        <p>Discover more resources and learning opportunities.</p>
+      </div>
+      <a href="discover.html">Explore Discover →</a>
+    </section>
+
+  </main>
+
+  <footer class="tools-footer">
+    <p>© <span id="year"></span> QuickServe. All rights reserved.</p>
+  </footer>
+
+  <script type="module" src="tools.js"></script>
+</body>
+</html>
