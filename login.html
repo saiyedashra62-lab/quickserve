@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080b18">
+  <title>Login | QuickServe</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="login.css">
+</head>
+
+<body class="auth-page">
+
+  <main class="auth-wrapper">
+
+    <a href="index.html" class="auth-brand">
+      <span class="brand-icon">Q</span>
+      <span>QuickServe</span>
+    </a>
+
+    <section class="auth-card">
+
+      <div class="auth-heading">
+        <span class="auth-eyebrow">WELCOME TO QUICKSERVE</span>
+        <h1 id="authTitle">Welcome Back</h1>
+        <p id="authSubtitle">Sign in to continue your journey.</p>
+      </div>
+
+      <div class="auth-tabs">
+        <button type="button" class="auth-tab active" id="loginTab">
+          Login
+        </button>
+
+        <button type="button" class="auth-tab" id="signupTab">
+          Create Account
+        </button>
+      </div>
+
+      <form id="loginForm">
+
+        <label for="loginEmail">Email Address</label>
+        <input
+          type="email"
+          id="loginEmail"
+          placeholder="Enter your email"
+          autocomplete="email"
+          required
+        >
+
+        <label for="loginPassword">Password</label>
+        <input
+          type="password"
+          id="loginPassword"
+          placeholder="Enter your password"
+          autocomplete="current-password"
+          required
+        >
+
+        <button type="submit" class="auth-submit" id="loginSubmit">
+          Sign In
+        </button>
+
+      </form>
+
+      <form id="signupForm" hidden>
+
+        <label for="signupName">Full Name</label>
+        <input
+          type="text"
+          id="signupName"
+          placeholder="Enter your name"
+          autocomplete="name"
+          required
+        >
+
+        <label for="signupEmail">Email Address</label>
+        <input
+          type="email"
+          id="signupEmail"
+          placeholder="Enter your email"
+          autocomplete="email"
+          required
+        >
+
+        <label for="signupPassword">Create Password</label>
+        <input
+          type="password"
+          id="signupPassword"
+          placeholder="At least 6 characters"
+          autocomplete="new-password"
+          minlength="6"
+          required
+        >
+
+        <button type="submit" class="auth-submit" id="signupSubmit">
+          Create Account
+        </button>
+
+      </form>
+
+      <div class="auth-divider">
+        <span>OR CONTINUE WITH</span>
+      </div>
+
+      <button type="button" class="google-auth-button" id="googleLogin">
+        <span class="google-symbol">G</span>
+        Continue with Google
+      </button>
+
+      <p class="auth-message" id="authMessage" aria-live="polite"></p>
+
+      <p class="auth-terms">
+        By continuing, you agree to use QuickServe responsibly.
+      </p>
+
+    </section>
+
+    <a href="index.html" class="back-home">
+      ← Back to Home
+    </a>
+
+  </main>
+
+  <script type="module" src="login.js"></script>
+
+</body>
+</html>
