@@ -1,0 +1,71 @@
+// QUICK SERVE CONTACT FORM
+
+import { db, auth } from "./firebase.js";
+
+import {
+  collection,
+  addDoc,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
+
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("contactForm");
+  const status = document.getElementById("contactStatus");
+  const submitButton = document.getElementById("contactSubmit");
+
+  const year = document.getElementById("year");
+
+  if (year) {
+    year.textContent = new Date().getFullYear();
+  }
+
+  if (!form) return;
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const name = document.getElementById("contactName").value.trim();
+    const email = document.getElementById("contactEmail").value.trim();
+    const subject = document.getElementById("contactSubject").value;
+    const message = document.getElementById("contactMessage").value.trim();
+
+    if (!name || !email || !subject || !message) {
+      status.textContent = "Please fill in all fields.";
+      return;
+    }
+
+    if (message.length < 10) {
+      status.textContent = "Please write a little more about your question.";
+      return;
+    }
+
+    submitButton.disabled = true;
+    submitButton.textContent = "Sending...";
+    status.textContent = "";
+
+    try {
+      await addDoc(collection(db, "contactMessages"), {
+        name,
+        email,
+        subject,
+        message,
+        userId: auth.currentUser?.uid || null,
+        status: "new",
+        createdAt: serverTimestamp()
+      });
+
+      status.textContent = "Your message has been submitted successfully!";
+      form.reset();
+
+    } catch (error) {
+      console.error("Contact form error:", error);
+
+      status.textContent =
+        "Message could not be sent. Please try again later.";
+
+    } finally {
+      submitButton.disabled = false;
+      submitButton.textContent = "Send Message →";
+    }
+  });
+});
