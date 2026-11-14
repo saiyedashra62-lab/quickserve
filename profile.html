@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Manage your QuickServe profile and account information.">
+  <title>My Profile | QuickServe</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="profile.css">
+</head>
+
+<body>
+
+<header class="topbar">
+  <a href="index.html" class="brand">
+    <span class="brand-logo">Q</span>
+    <span>QuickServe</span>
+  </a>
+
+  <nav class="top-nav">
+    <a href="index.html">Home</a>
+    <a href="discover.html">Discover</a>
+    <a href="blogs.html">Blogs</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+
+  <a href="profile.html" class="profile-link active">My Profile</a>
+</header>
+
+<aside class="sidebar">
+  <div class="sidebar-heading">MENU</div>
+  <a href="index.html">⌂ Home</a>
+  <a href="discover.html">✧ Discover</a>
+  <a href="my-learning.html">▣ My Learning</a>
+  <a href="my-orders.html">▤ My Orders</a>
+  <a href="discover.html">◈ All Courses</a>
+  <a href="tools.html">⚒ Tools</a>
+  <a href="blogs.html">▤ Articles & Blogs</a>
+  <a href="profile.html" class="active">♙ Profile</a>
+  <a href="contact.html">✉ Contact Us</a>
+</aside>
+
+<main class="profile-page">
+
+  <section class="profile-hero">
+    <span>YOUR ACCOUNT</span>
+    <h1>My <strong>Profile</strong></h1>
+    <p>Manage your personal information and QuickServe account.</p>
+  </section>
+
+  <section class="profile-layout">
+
+    <div class="profile-card">
+
+      <div class="profile-avatar" id="profileAvatar">Q</div>
+
+      <h2 id="profileName">Guest User</h2>
+      <p id="profileEmail">Not signed in</p>
+
+      <span class="profile-status" id="profileStatus">Guest Account</span>
+
+      <div class="profile-divider"></div>
+
+      <div class="profile-menu">
+        <a href="#accountDetails" class="selected">Personal Information</a>
+        <a href="my-learning.html">My Learning</a>
+        <a href="my-orders.html">My Orders</a>
+        <a href="contact.html">Help & Support</a>
+      </div>
+
+      <button type="button" id="logoutButton" class="logout-button">
+        Sign Out
+      </button>
+
+    </div>
+
+    <div class="profile-details" id="accountDetails">
+
+      <div class="profile-section-heading">
+        <div>
+          <span>ACCOUNT SETTINGS</span>
+          <h2>Personal Information</h2>
+          <p>View and update your profile details.</p>
+        </div>
+      </div>
+
+      <div id="profileMessage" class="profile-message" role="status"></div>
+
+      <form id="profileForm">
+
+        <div class="profile-field">
+          <label for="displayName">Full Name</label>
+          <input
+            type="text"
+            id="displayName"
+            placeholder="Your full name"
+            maxlength="80"
+            required
+          >
+        </div>
+
+        <div class="profile-field">
+          <label for="emailAddress">Email Address</label>
+          <input
+            type="email"
+            id="emailAddress"
+            placeholder="Your email address"
+            disabled
+          >
+        </div>
+
+        <div class="profile-field">
+          <label for="accountCreated">Account Created</label>
+          <input
+            type="text"
+            id="accountCreated"
+            value="Loading..."
+            disabled
+          >
+        </div>
+
+        <button type="submit" id="saveProfileButton">
+          Save Changes →
+        </button>
+
+      </form>
+
+      <div class="profile-note">
+        <strong>Account Security</strong>
+        <p>
+          Your account information is connected to your QuickServe
+          sign-in account. Keep your login details private.
+        </p>
+      </div>
+
+    </div>
+
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>© <span id="year"></span> QuickServe. All rights reserved.</p>
+  <div>
+    <a href="index.html">Home</a>
+    <a href="blogs.html">Blogs</a>
+    <a href="contact.html">Contact</a>
+  </div>
+</footer>
+
+<script type="module" src="profile.js"></script>
+</body>
+</html>
