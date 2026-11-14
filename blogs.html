@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Explore QuickServe articles, business tips, design guides and digital growth resources.">
+  <title>Articles & Blogs | QuickServe</title>
+
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="blogs.css">
+</head>
+
+<body>
+
+<header class="topbar">
+  <a href="index.html" class="brand">
+    <span class="brand-logo">Q</span>
+    <span>QuickServe</span>
+  </a>
+
+  <nav class="top-nav">
+    <a href="index.html">Home</a>
+    <a href="discover.html">Discover</a>
+    <a href="blogs.html" class="active">Blogs</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+
+  <a href="profile.html" class="profile-link">My Profile</a>
+</header>
+
+<aside class="sidebar">
+  <div class="sidebar-heading">MENU</div>
+  <a href="index.html">⌂ Home</a>
+  <a href="discover.html">✧ Discover</a>
+  <a href="my-learning.html">▣ My Learning</a>
+  <a href="my-orders.html">▤ My Orders</a>
+  <a href="discover.html">◈ All Courses</a>
+  <a href="tools.html">⚒ Tools</a>
+  <a href="blogs.html" class="active">▤ Articles & Blogs</a>
+  <a href="profile.html">♙ Profile</a>
+  <a href="contact.html">✉ Contact Us</a>
+
+  <div class="sidebar-promo">
+    <h3>Keep Growing!</h3>
+    <p>Learn new skills and explore digital opportunities.</p>
+    <a href="discover.html">Explore Courses →</a>
+  </div>
+</aside>
+
+<main class="blogs-page">
+
+  <section class="blogs-hero">
+    <span class="hero-label">QUICKSERVE KNOWLEDGE HUB</span>
+    <h1>Ideas that help you <span>grow.</span></h1>
+    <p>
+      Discover practical guides, creative ideas, business tips
+      and digital skills to move forward.
+    </p>
+  </section>
+
+  <section class="blogs-toolbar">
+    <div>
+      <h2>Explore Articles</h2>
+      <p>Fresh ideas and useful knowledge in one place.</p>
+    </div>
+
+    <input
+      type="search"
+      id="blogSearch"
+      placeholder="Search articles..."
+      aria-label="Search articles"
+    >
+  </section>
+
+  <div class="blog-categories">
+    <button class="blog-filter active" data-category="all">All Articles</button>
+    <button class="blog-filter" data-category="business">Business</button>
+    <button class="blog-filter" data-category="design">Design</button>
+    <button class="blog-filter" data-category="technology">Technology</button>
+    <button class="blog-filter" data-category="marketing">Marketing</button>
+  </div>
+
+  <div class="blog-results">
+    <span id="blogCount">Loading articles...</span>
+  </div>
+
+  <section class="blogs-grid" id="blogsGrid">
+
+    <article class="blog-card" data-category="business">
+      <div class="blog-cover cover-business">
+        <span>BUSINESS</span>
+        <strong>01</strong>
+      </div>
+      <div class="blog-card-content">
+        <span class="blog-tag">BUSINESS</span>
+        <h3>How to Start Building Your Online Business</h3>
+        <p>
+          Understand the basic steps of planning an online business,
+          choosing a service and creating a digital presence.
+        </p>
+        <a href="#article-business" class="blog-read">Read Article →</a>
+      </div>
+    </article>
+
+    <article class="blog-card" data-category="design">
+      <div class="blog-cover cover-design">
+        <span>DESIGN</span>
+        <strong>02</strong>
+      </div>
+      <div class="blog-card-content">
+        <span class="blog-tag">DESIGN</span>
+        <h3>Design Principles Every Beginner Should Know</h3>
+        <p>
+          Learn about colors, typography, spacing and visual balance
+          to create better digital designs.
+        </p>
+        <a href="#article-design" class="blog-read">Read Article →</a>
+      </div>
+    </article>
+
+    <article class="blog-card" data-category="technology">
+      <div class="blog-cover cover-tech">
+        <span>TECHNOLOGY</span>
+        <strong>03</strong>
+      </div>
+      <div class="blog-card-content">
+        <span class="blog-tag">TECHNOLOGY</span>
+        <h3>How AI Tools Are Changing Digital Work</h3>
+        <p>
+          Explore how artificial intelligence tools can support
+          creativity, productivity and everyday digital tasks.
+        </p>
+        <a href="#article-tech" class="blog-read">Read Article →</a>
+      </div>
+    </article>
+
+    <article class="blog-card" data-category="marketing">
+      <div class="blog-cover cover-marketing">
+        <span>MARKETING</span>
+        <strong>04</strong>
+      </div>
+      <div class="blog-card-content">
+        <span class="blog-tag">MARKETING</span>
+        <h3>Social Media Content Ideas for Small Businesses</h3>
+        <p>
+          Discover useful content formats that can help a small
+          business communicate with its audience.
+        </p>
+        <a href="#article-marketing" class="blog-read">Read Article →</a>
+      </div>
+    </article>
+
+    <article class="blog-card" data-category="business">
+      <div class="blog-cover cover-growth">
+        <span>GROWTH</span>
+        <strong>05</strong>
+      </div>
+      <div class="blog-card-content">
+        <span class="blog-tag">BUSINESS</span>
+        <h3>Why Every Business Needs a Website</h3>
+        <p>
+          Learn how a professional website helps customers discover
+          a business and understand its services.
+        </p>
+        <a href="#article-growth" class="blog-read">Read Article →</a>
+      </div>
+    </article>
+
+    <article class="blog-card" data-category="technology">
+      <div class="blog-cover cover-web">
+        <span>WEB DEVELOPMENT</span>
+        <strong>06</strong>
+      </div>
+      <div class="blog-card-content">
+        <span class="blog-tag">TECHNOLOGY</span>
+        <h3>HTML, CSS and JavaScript Explained Simply</h3>
+        <p>
+          Understand the three basic technologies used to build
+          interactive websites.
+        </p>
+        <a href="#article-web" class="blog-read">Read Article →</a>
+      </div>
+    </article>
+
+  </section>
+
+  <div class="blogs-empty" id="blogsEmpty">
+    <h3>No articles found</h3>
+    <p>Try another search or category.</p>
+  </div>
+
+  <section class="blog-feature">
+    <span>YOUR NEXT STEP</span>
+    <h2>Ready to learn something new?</h2>
+    <p>Explore courses and build useful digital skills with QuickServe.</p>
+    <a href="discover.html">Explore Courses →</a>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>© <span id="year"></span> QuickServe. All rights reserved.</p>
+  <div>
+    <a href="index.html">Home</a>
+    <a href="contact.html">Contact</a>
+    <a href="discover.html">Courses</a>
+  </div>
+</footer>
+
+<script src="blogs.js"></script>
+</body>
+</html>
