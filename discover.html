@@ -4,222 +4,270 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#090811">
-  <title>QuickServe — Learning Dashboard</title>
-  <meta name="description" content="Discover courses, digital tools and creative learning resources.">
+  <meta name="theme-color" content="#080b18">
+  <meta name="description" content="Discover professional courses, creative tools and useful articles on QuickServe.">
+  <title>Discover | QuickServe</title>
   <link rel="stylesheet" href="discover.css">
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-<div class="dashboard">
+<div class="ambient-bg"></div>
 
-  <!-- SIDEBAR -->
-  <aside class="sidebar" id="sidebar">
+<header class="topbar">
+  <a class="brand" href="index.html">
+    <span class="brand-mark">Q</span>
+    <span>Quick<span>Serve</span></span>
+  </a>
 
-    <a href="index.html" class="brand">
-      <span class="brand-icon">Q</span>
-      <span>quickserve<span class="brand-plus">+</span></span>
-    </a>
+  <nav class="top-nav">
+    <a href="index.html">Home</a>
+    <a href="discover.html" class="active">Discover</a>
+    <a href="blogs.html">Blogs</a>
+    <a href="contact.html">Contact</a>
+  </nav>
 
-    <div class="sidebar-label">WORKSPACE</div>
+  <a href="profile.html" class="profile-link">My Profile</a>
+</header>
 
-    <nav class="side-nav">
-      <a href="index.html" class="side-link">
-        <span>⌂</span> Home
-      </a>
-      <a href="#saved" class="side-link">
-        <span>♡</span> Saved
-      </a>
-    </nav>
+<div class="app-layout">
 
-    <div class="sidebar-label">EXPLORE</div>
+  <aside class="sidebar">
+    <div class="sidebar-heading">WORKSPACE</div>
 
-    <nav class="side-nav">
-      <a href="#courses" class="side-link active">
-        <span>▦</span> All Courses
-      </a>
-      <a href="#courses" class="side-link">
-        <span>◎</span> User Psychology
-      </a>
-      <a href="#courses" class="side-link">
-        <span>⌁</span> Conversion
-      </a>
-      <a href="#courses" class="side-link">
-        <span>✧</span> Visual Design
-      </a>
-      <a href="#courses" class="side-link">
-        <span>▣</span> Product UX
-      </a>
-      <a href="#tools" class="side-link">
-        <span>✦</span> AI Tools
-      </a>
-    </nav>
+    <a href="index.html" class="side-link">⌂ <span>Home</span></a>
+    <a href="discover.html" class="side-link active">◈ <span>Discover</span></a>
+    <a href="my-learning.html" class="side-link">▤ <span>My Learning</span></a>
+    <a href="my-orders.html" class="side-link">▣ <span>My Orders</span></a>
 
-    <div class="sidebar-bottom">
-      <div class="sidebar-promo">
-        <span>✦ QUICK TIP</span>
-        <p>Learn something new every day.</p>
-        <a href="#courses">Explore learning →</a>
-      </div>
-      <a href="index.html" class="back-home">← Back to QuickServe</a>
+    <div class="sidebar-heading">EXPLORE</div>
+    <a href="#courses" class="side-link">✧ <span>All Courses</span></a>
+    <a href="#free-course" class="side-link">◇ <span>Free Course</span></a>
+    <a href="#premium" class="side-link">♛ <span>Premium Courses</span></a>
+    <a href="#tools" class="side-link">⚒ <span>Creative Tools</span></a>
+    <a href="blogs.html" class="side-link">▧ <span>Articles & Blogs</span></a>
+
+    <div class="sidebar-heading">ACCOUNT</div>
+    <a href="profile.html" class="side-link">◎ <span>Profile</span></a>
+    <a href="contact.html" class="side-link">✉ <span>Contact Us</span></a>
+
+    <div class="sidebar-promo">
+      <div class="promo-icon">✦</div>
+      <h3>Level up your skills</h3>
+      <p>Explore courses and learn something new every day.</p>
+      <a href="#premium">Explore Premium →</a>
     </div>
-
   </aside>
 
-
-  <!-- MAIN CONTENT -->
   <main class="main-content">
 
-    <!-- TOPBAR -->
-    <header class="topbar">
-      <button class="menu-toggle" id="menuToggle" type="button" aria-label="Toggle menu">☰</button>
+    <section class="discover-hero">
+      <div class="hero-content">
+        <span class="eyebrow">THE QUICKSERVE LEARNING HUB</span>
+        <h1>Discover. Learn.<br><span>Create More.</span></h1>
+        <p>
+          Explore practical courses, useful creative tools and
+          knowledge designed to help you grow.
+        </p>
 
-      <div class="breadcrumb">
-        <span>QuickServe</span>
-        <span>/</span>
-        <strong>Learning Platform</strong>
+        <div class="hero-actions">
+          <a href="#courses" class="primary-btn">Explore Courses →</a>
+          <a href="#tools" class="secondary-btn">Explore Tools</a>
+        </div>
       </div>
 
-      <div class="topbar-actions">
-        <a href="#suggest" class="topbar-link">Suggest a Tool</a>
-        <a href="#courses" class="profile-button">QS</a>
-      </div>
-    </header>
-
-
-    <!-- PAGE HEADING -->
-    <section class="page-heading">
-      <div>
-        <span class="eyebrow">✦ YOUR LEARNING SPACE</span>
-        <h1>UX/UI Product Design Courses</h1>
-        <p>Explore practical courses, improve your skills and discover new ideas.</p>
-      </div>
-
-      <div class="heading-badge">
-        <span class="live-dot"></span>
-        Discover & Learn
-      </div>
-    </section>
-
-
-    <!-- SEARCH -->
-    <section class="search-area">
-      <div class="search-box">
-        <span>⌕</span>
-        <input type="search" id="courseSearch" placeholder="Search courses, topics and skills...">
-        <span class="search-shortcut">⌘ K</span>
+      <div class="hero-visual">
+        <div class="visual-orb orb-one"></div>
+        <div class="visual-orb orb-two"></div>
+        <div class="floating-panel panel-one">
+          <span>✦</span>
+          <strong>Learn new skills</strong>
+          <small>At your own pace</small>
+        </div>
+        <div class="floating-panel panel-two">
+          <span>◈</span>
+          <strong>Creative tools</strong>
+          <small>Build something great</small>
+        </div>
+        <div class="hero-center-icon">Q</div>
       </div>
     </section>
 
+    <section class="discover-stats">
+      <div><strong>01</strong><span>Free Course</span></div>
+      <div><strong>Premium</strong><span>Advanced Learning</span></div>
+      <div><strong>Tools</strong><span>Creative Resources</span></div>
+      <div><strong>Learn</strong><span>At Your Pace</span></div>
+    </section>
 
-    <!-- COURSE FILTERS -->
-    <section class="course-section" id="courses">
-
-      <div class="section-top">
+    <section class="content-section" id="courses">
+      <div class="section-heading">
         <div>
-          <span class="eyebrow">CURATED LEARNING</span>
+          <span class="eyebrow">LEARNING LIBRARY</span>
           <h2>Explore Courses</h2>
+          <p>Choose a course and start building useful skills.</p>
+        </div>
+      </div>
+
+      <div class="course-controls">
+        <div class="search-box">
+          <span>⌕</span>
+          <input id="courseSearch" type="search"
+            placeholder="Search courses...">
         </div>
 
-        <a href="#courses" class="view-all">View all →</a>
+        <select id="courseFilter">
+          <option value="all">All Courses</option>
+          <option value="free">Free Courses</option>
+          <option value="premium">Premium Courses</option>
+        </select>
       </div>
 
-      <div class="category-filters">
-        <button class="course-filter active" data-course-type="all" type="button">All Courses</button>
-        <button class="course-filter" data-course-type="free" type="button">Free</button>
-        <button class="course-filter" data-course-type="premium" type="button">Premium</button>
+      <div class="course-category-row">
+        <button class="category-chip active" data-category="all">All</button>
+        <button class="category-chip" data-category="design">Design</button>
+        <button class="category-chip" data-category="business">Business</button>
+        <button class="category-chip" data-category="technology">Technology</button>
+        <button class="category-chip" data-category="marketing">Marketing</button>
       </div>
 
-      <div class="courses-grid" id="coursesGrid">
-        <div class="loading">Courses will appear here.</div>
+      <div id="coursesGrid" class="courses-grid">
+        <div class="loading-card">
+          <div class="loader"></div>
+          <p>Loading courses...</p>
+        </div>
       </div>
 
+      <div id="courseEmpty" class="empty-state hidden">
+        <span>⌕</span>
+        <h3>No courses found</h3>
+        <p>Try another search or category.</p>
+      </div>
     </section>
 
+    <section class="free-course-section" id="free-course">
+      <div class="free-course-content">
+        <span class="eyebrow">START LEARNING TODAY</span>
+        <span class="free-label">FREE COURSE</span>
+        <h2>UI/UX Design<br>for Beginners</h2>
+        <p>
+          Understand user experience, interface design, layouts,
+          colours and practical design fundamentals.
+        </p>
+        <ul>
+          <li>Beginner-friendly lessons</li>
+          <li>Practical examples and exercises</li>
+          <li>Chapters and progress tracking</li>
+        </ul>
+        <a href="course.html?id=ui-ux-beginners" class="primary-btn">
+          Start Free Course →
+        </a>
+      </div>
 
-    <!-- TOOLS -->
-    <section class="course-section" id="tools">
+      <div class="free-course-art">
+        <div class="design-window">
+          <div class="window-top"><i></i><i></i><i></i></div>
+          <div class="design-layout">
+            <div class="design-sidebar"></div>
+            <div class="design-main">
+              <div class="design-line"></div>
+              <div class="design-line short"></div>
+              <div class="design-boxes">
+                <div></div><div></div><div></div>
+              </div>
+              <div class="design-line"></div>
+            </div>
+          </div>
+        </div>
+        <div class="art-tag">DESIGN YOUR FUTURE</div>
+      </div>
+    </section>
 
-      <div class="section-top">
+    <section class="content-section premium-section" id="premium">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">GO BEYOND THE BASICS</span>
+          <h2>Premium Learning</h2>
+          <p>Explore advanced learning experiences and detailed lessons.</p>
+        </div>
+        <span class="premium-badge">✦ PREMIUM</span>
+      </div>
+
+      <div id="premiumCoursesGrid" class="courses-grid">
+        <div class="loading-card">
+          <div class="loader"></div>
+          <p>Loading premium courses...</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="content-section tools-section" id="tools">
+      <div class="section-heading">
         <div>
           <span class="eyebrow">WORK SMARTER</span>
-          <h2>Discover Digital Tools</h2>
-          <p>Useful websites and AI tools for your daily work.</p>
+          <h2>Creative Tools</h2>
+          <p>Discover resources to make your work easier.</p>
         </div>
       </div>
 
-      <div class="filter-bar">
-        <button class="filter active" data-category="all" type="button">All Tools</button>
-        <button class="filter" data-category="ai" type="button">AI Tools</button>
-        <button class="filter" data-category="free" type="button">Free</button>
-        <button class="filter" data-category="premium" type="button">Premium</button>
+      <div id="toolsGrid" class="tools-grid">
+        <div class="loading-card">
+          <div class="loader"></div>
+          <p>Loading tools...</p>
+        </div>
       </div>
-
-      <div class="tools-grid" id="toolsGrid">
-        <p class="loading">Loading tools...</p>
-      </div>
-
     </section>
 
-
-    <!-- BLOGS -->
-    <section class="course-section" id="blogs">
-
-      <div class="section-top">
+    <section class="content-section blog-section" id="blogs">
+      <div class="section-heading">
         <div>
-          <span class="eyebrow">INSIGHTS & IDEAS</span>
+          <span class="eyebrow">IDEAS & KNOWLEDGE</span>
           <h2>Latest Articles</h2>
-          <p>Read helpful guides, digital tips and technology insights.</p>
+          <p>Read useful tips, guides and creative insights.</p>
+        </div>
+        <a href="blogs.html" class="text-link">View All Articles →</a>
+      </div>
+
+      <div id="blogsGrid" class="blogs-grid">
+        <div class="loading-card">
+          <div class="loader"></div>
+          <p>Loading articles...</p>
         </div>
       </div>
-
-      <div class="blogs-grid" id="blogsGrid">
-        <p class="loading">Loading articles...</p>
-      </div>
-
     </section>
 
-
-    <!-- SUGGEST TOOL -->
-    <section class="course-section suggest-section" id="suggest">
-
-      <div class="section-top">
-        <div>
-          <span class="eyebrow">COMMUNITY</span>
-          <h2>Suggest a Useful Tool</h2>
-          <p>Share a website or digital tool with the QuickServe community.</p>
-        </div>
+    <section class="suggest-section">
+      <div>
+        <span class="eyebrow">HELP US IMPROVE</span>
+        <h2>What would you like to learn next?</h2>
+        <p>Suggest a course or tool you want to see on QuickServe.</p>
       </div>
 
-      <form class="suggest-form" id="suggestForm">
-
-        <label for="toolName">Tool Name</label>
-        <input id="toolName" type="text" placeholder="Enter tool name" required>
-
-        <label for="toolUrl">Website URL</label>
-        <input id="toolUrl" type="url" placeholder="https://example.com" required>
-
-        <label for="toolDescription">Description</label>
-        <textarea id="toolDescription" rows="4" placeholder="What does this tool do?" required></textarea>
-
-        <button type="submit" id="suggestBtn" class="primary-btn">Submit Suggestion</button>
-        <p id="suggestMessage" aria-live="polite"></p>
-
+      <form id="suggestForm">
+        <input id="suggestionInput" type="text"
+          placeholder="Suggest a course or tool..." required>
+        <button type="submit" class="primary-btn">Send Suggestion →</button>
       </form>
-
     </section>
 
-
-    <footer class="dashboard-footer">
-      <span>© <span id="year"></span> QuickServe</span>
-      <span>Designed for curious minds ✦</span>
+    <footer class="discover-footer">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">Q</span>
+        <span>Quick<span>Serve</span></span>
+      </a>
+      <p>Learn new skills. Discover new possibilities.</p>
+      <div>
+        <a href="index.html">Home</a>
+        <a href="contact.html">Contact</a>
+        <a href="blogs.html">Blogs</a>
+      </div>
+      <small>© <span id="year"></span> QuickServe. All rights reserved.</small>
     </footer>
 
   </main>
 </div>
 
 <script type="module" src="discover.js"></script>
-
 </body>
-</html>
+        </html>
+        
