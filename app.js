@@ -26,3 +26,4 @@ function generatePaymentQR(orderId, amount) {
     correctLevel: window.QRCode.CorrectLevel.M
   });
 }
+$("footerYear").textContent = new Date().getFullYear();
