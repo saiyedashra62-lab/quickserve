@@ -1,407 +1,394 @@
-
-import { auth, db, googleProvider } from "./firebase.js";
-
-import {
-  signInWithPopup,
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js";
+import { auth, db } from "./firebase.js";
 
 import {
   collection,
-  getDocs,
-  query,
-  where,
   addDoc,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
 
-const $ = id => document.getElementById(id);
+// ======================================
+// QUICKSERVE DISCOVER - COURSE DATABASE
+// ======================================
 
-const coursesGrid = $("coursesGrid");
-const premiumGrid = $("premiumCoursesGrid");
-const toolsGrid = $("toolsGrid");
-const blogsGrid = $("blogsGrid");
-const searchInput = $("courseSearch");
-const courseFilter = $("courseFilter");
-
-let currentUser = null;
-let allCourses = [];
-let allTools = [];
-let activeCategory = "all";
-
-onAuthStateChanged(auth, user => {
-  currentUser = user;
-});
-
-function safeUrl(value) {
-  try {
-    const url = new URL(value);
-    return ["https:", "http:"].includes(url.protocol)
-      ? url.href
-      : "";
-  } catch {
-    return "";
+const courses = [
+  {
+    id: "ui-ux-beginners",
+    title: "UI/UX Design for Beginners",
+    category: "design",
+    level: "Beginner",
+    duration: "4 Weeks",
+    lessons: 12,
+    type: "free",
+    price: "FREE",
+    description: "Learn user interface design, user experience, layouts, colours, typography and practical design fundamentals.",
+    icon: "✦"
+  },
+  {
+    id: "canva-design-mastery",
+    title: "Canva Design Mastery",
+    category: "design",
+    level: "Beginner",
+    duration: "5 Weeks",
+    lessons: 18,
+    type: "premium",
+    price: "Premium",
+    description: "Learn professional social media graphics, posters, presentations and brand design.",
+    icon: "◈"
+  },
+  {
+    id: "digital-marketing",
+    title: "Digital Marketing Complete Course",
+    category: "marketing",
+    level: "Beginner",
+    duration: "6 Weeks",
+    lessons: 20,
+    type: "premium",
+    price: "Premium",
+    description: "Understand social media marketing, content strategy, branding and digital promotion.",
+    icon: "↗"
+  },
+  {
+    id: "business-freelancing",
+    title: "Business & Freelancing Basics",
+    category: "business",
+    level: "Beginner",
+    duration: "4 Weeks",
+    lessons: 15,
+    type: "premium",
+    price: "Premium",
+    description: "Explore freelancing, client communication, service pricing and building a small business.",
+    icon: "◇"
+  },
+  {
+    id: "web-development",
+    title: "Website Development Basics",
+    category: "technology",
+    level: "Beginner",
+    duration: "8 Weeks",
+    lessons: 24,
+    type: "premium",
+    price: "Premium",
+    description: "Understand HTML, CSS, JavaScript and how modern websites are built.",
+    icon: "⌘"
   }
-}
+];
 
-function element(tag, className, text) {
-  const el = document.createElement(tag);
-  if (className) el.className = className;
-  if (text !== undefined) el.textContent = text;
-  return el;
-}
+// ======================================
+// CREATIVE TOOLS
+// ======================================
 
-function message(container, text) {
-  if (!container) return;
-  container.replaceChildren(element("p", "empty-state", text));
-}
-
-function getCourseType(course) {
-  const raw = String(course.type || course.access || "").toLowerCase();
-
-  if (raw === "free" || raw === "premium") return raw;
-
-  // Keep the known beginner course free.
-  return course.id === "ui-ux-beginners" ? "free" : "premium";
-}
-
-function courseLink(course) {
-  return `course.html?id=${encodeURIComponent(course.id)}`;
-}
-
-function makeCourseCard(course) {
-  const card = element("article", "course-card");
-
-  const cover = element("div", "course-cover");
-  const imageUrl = safeUrl(course.image || course.thumbnail);
-
-  if (imageUrl) {
-    const img = element("img");
-    img.src = imageUrl;
-    img.alt = course.title || "Course cover";
-    img.loading = "lazy";
-    cover.append(img);
-  } else {
-    cover.append(element("span", "cover-symbol", "✦"));
+const tools = [
+  {
+    name: "Invoice Maker",
+    category: "business",
+    description: "Create professional invoices for your business.",
+    icon: "▤",
+    link: "https://saiyedashra62-lab.github.io/invoice-maker/"
+  },
+  {
+    name: "QR Code Maker",
+    category: "productivity",
+    description: "Generate QR codes for links and information.",
+    icon: "▦",
+    link: "https://www.qrcode-monkey.com/"
+  },
+  {
+    name: "Design Workspace",
+    category: "design",
+    description: "Create posters, presentations and social media designs.",
+    icon: "✧",
+    link: "https://www.canva.com/"
+  },
+  {
+    name: "Resume Maker",
+    category: "business",
+    description: "Explore professional resume creation resources.",
+    icon: "▣",
+    link: "tools.html"
+  },
+  {
+    name: "Digital Visiting Card",
+    category: "business",
+    description: "Explore digital business card resources.",
+    icon: "▤",
+    link: "tools.html"
+  },
+  {
+    name: "Text & Notes",
+    category: "productivity",
+    description: "Write, organise and manage your documents.",
+    icon: "✎",
+    link: "https://docs.google.com/"
   }
+];
 
-  const type = getCourseType(course);
-  cover.append(
-    element(
-      "span",
-      `course-badge ${type}`,
-      type === "premium" ? "PREMIUM" : "FREE"
-    )
-  );
+// ======================================
+// BLOG ARTICLES
+// ======================================
 
-  const body = element("div", "course-card-body");
+const blogs = [
+  {
+    title: "What Is UI/UX Design?",
+    category: "design",
+    description: "Understand the difference between UI and UX and why both matter.",
+    link: "blogs.html"
+  },
+  {
+    title: "How to Start Freelancing",
+    category: "business",
+    description: "Learn the basics of services, clients and building a portfolio.",
+    link: "blogs.html"
+  },
+  {
+    title: "Digital Marketing Explained",
+    category: "marketing",
+    description: "An introduction to online promotion and digital branding.",
+    link: "blogs.html"
+  },
+  {
+    title: "How Websites Work",
+    category: "technology",
+    description: "Discover the basics behind websites and web development.",
+    link: "blogs.html"
+  }
+];
 
-  body.append(
-    element("span", "course-category", course.category || "General"),
-    element("h3", "", course.title || course.name || "Untitled Course"),
-    element("p", "", course.description || "Explore this course.")
-  );
+// ======================================
+// HELPERS
+// ======================================
 
-  const meta = element("div", "course-meta");
-  meta.append(
-    element("span", "", course.level || "Beginner"),
-    element("span", "", course.duration || "Self paced")
-  );
-  body.append(meta);
+const $ = (id) => document.getElementById(id);
 
-  const link = element(
-    "a",
-    "card-link",
-    type === "premium" ? "View Premium Course →" : "Start Learning →"
-  );
-  link.href = courseLink(course);
-  body.append(link);
+const escapeHTML = (value = "") =>
+  String(value).replace(/[&<>"']/g, (char) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#039;"
+  })[char]);
 
-  card.append(cover, body);
-  return card;
+let selectedCategory = "all";
+
+function updateYear() {
+  const year = $("year");
+  if (year) year.textContent = new Date().getFullYear();
 }
+
+// ======================================
+// COURSE CARDS
+// ======================================
+
+function courseCard(course) {
+  const premium = course.type === "premium";
+
+  return `
+    <article class="course-card">
+      <div class="course-card-top">
+        <span class="course-icon">${escapeHTML(course.icon)}</span>
+        <span class="course-badge ${premium ? "premium" : "free"}">
+          ${premium ? "PREMIUM" : "FREE COURSE"}
+        </span>
+      </div>
+
+      <div class="course-card-content">
+        <span class="course-category">
+          ${escapeHTML(course.category)}
+        </span>
+
+        <h3>${escapeHTML(course.title)}</h3>
+
+        <p>${escapeHTML(course.description)}</p>
+
+        <div class="course-meta">
+          <span>${escapeHTML(course.level)}</span>
+          <span>${escapeHTML(course.duration)}</span>
+          <span>${course.lessons} Lessons</span>
+        </div>
+
+        <div class="course-card-bottom">
+          <strong>${escapeHTML(course.price)}</strong>
+
+          <a href="course.html?id=${encodeURIComponent(course.id)}"
+             class="course-open-btn">
+            ${premium ? "Explore Course →" : "Start Learning →"}
+          </a>
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+// ======================================
+// RENDER COURSES
+// ======================================
 
 function renderCourses() {
-  if (!coursesGrid) return;
+  const grid = $("coursesGrid");
+  const premiumGrid = $("premiumCoursesGrid");
 
-  coursesGrid.replaceChildren();
+  const search = ($("courseSearch")?.value || "")
+    .trim()
+    .toLowerCase();
 
-  const search = (searchInput?.value || "").trim().toLowerCase();
-  const type = courseFilter?.value || "all";
+  const filter = $("courseFilter")?.value || "all";
 
-  const filtered = allCourses.filter(course => {
-    const courseType = getCourseType(course);
-    const category = String(course.category || "").toLowerCase();
+  const filtered = courses.filter((course) => {
+    const matchesSearch =
+      course.title.toLowerCase().includes(search) ||
+      course.description.toLowerCase().includes(search) ||
+      course.category.toLowerCase().includes(search);
 
-    const matchesSearch = [
-      course.title,
-      course.name,
-      course.description,
-      course.category
-    ].join(" ").toLowerCase().includes(search);
-
-    const matchesType = type === "all" || courseType === type;
     const matchesCategory =
-      activeCategory === "all" ||
-      category.includes(activeCategory);
+      selectedCategory === "all" ||
+      course.category === selectedCategory;
 
-    return matchesSearch && matchesType && matchesCategory;
+    const matchesType =
+      filter === "all" || course.type === filter;
+
+    return matchesSearch && matchesCategory && matchesType;
   });
 
-  if (!filtered.length) {
-    message(coursesGrid, "No courses found. Try another search.");
-  } else {
-    filtered.forEach(course => {
-      coursesGrid.append(makeCourseCard(course));
-    });
+  if (grid) {
+    grid.innerHTML = filtered.length
+      ? filtered.map(courseCard).join("")
+      : `<div class="course-empty-message">
+           No courses found. Try another search or category.
+         </div>`;
   }
 
   if (premiumGrid) {
-    premiumGrid.replaceChildren();
-
-    const premiumCourses = allCourses.filter(
-      course => getCourseType(course) === "premium"
+    const premiumCourses = courses.filter(
+      (course) => course.type === "premium"
     );
 
-    if (!premiumCourses.length) {
-      message(premiumGrid, "Premium courses are being prepared.");
-    } else {
-      premiumCourses.forEach(course => {
-        premiumGrid.append(makeCourseCard(course));
-      });
-    }
+    premiumGrid.innerHTML = premiumCourses
+      .map(courseCard)
+      .join("");
   }
 
   const empty = $("courseEmpty");
-  if (empty) empty.classList.toggle("hidden", filtered.length > 0);
+  if (empty) empty.hidden = filtered.length > 0;
 }
 
-async function loadCourses() {
-  if (!coursesGrid) return;
+// ======================================
+// CATEGORY FILTERS
+// ======================================
 
-  message(coursesGrid, "Loading courses...");
-
-  try {
-    const q = query(
-      collection(db, "courses"),
-      where("status", "==", "published")
-    );
-
-    const snapshot = await getDocs(q);
-
-    allCourses = snapshot.docs.map(item => ({
-      id: item.id,
-      ...item.data()
-    }));
-
-    renderCourses();
-  } catch (error) {
-    console.error("Courses error:", error);
-    message(coursesGrid, "Unable to load courses. Please try again.");
-    if (premiumGrid) {
-      message(premiumGrid, "Premium courses could not be loaded.");
-    }
-  }
-}
-
-// Search and price filters
-searchInput?.addEventListener("input", renderCourses);
-courseFilter?.addEventListener("change", renderCourses);
-
-// Category filters
-document.querySelectorAll(".category-chip").forEach(button => {
+document.querySelectorAll("[data-category]").forEach((button) => {
   button.addEventListener("click", () => {
-    activeCategory = button.dataset.category || "all";
+    selectedCategory = button.dataset.category || "all";
 
-    document.querySelectorAll(".category-chip").forEach(item => {
-      item.classList.remove("active");
+    document.querySelectorAll("[data-category]").forEach((item) => {
+      item.classList.toggle("active", item === button);
     });
 
-    button.classList.add("active");
     renderCourses();
   });
 });
 
-// Tools
+// ======================================
+// SEARCH AND COURSE TYPE
+// ======================================
+
+$("courseSearch")?.addEventListener("input", renderCourses);
+$("courseFilter")?.addEventListener("change", renderCourses);
+
+// ======================================
+// TOOLS
+// ======================================
+
 function renderTools() {
-  if (!toolsGrid) return;
+  const grid = $("toolsGrid");
+  if (!grid) return;
 
-  toolsGrid.replaceChildren();
+  grid.innerHTML = tools.map((tool) => `
+    <article class="tool-card" data-filter="${escapeHTML(tool.category)}">
+      <div class="tool-icon">${escapeHTML(tool.icon)}</div>
+      <h3>${escapeHTML(tool.name)}</h3>
+      <p>${escapeHTML(tool.description)}</p>
+      <a href="${escapeHTML(tool.link)}" target="_blank"
+         rel="noopener noreferrer">
+        Open Tool →
+      </a>
+    </article>
+  `).join("");
+}
 
-  if (!allTools.length) {
-    message(toolsGrid, "Creative tools are coming soon.");
+// ======================================
+// BLOGS
+// ======================================
+
+function renderBlogs() {
+  const grid = $("blogsGrid");
+  if (!grid) return;
+
+  grid.innerHTML = blogs.map((blog) => `
+    <article class="blog-card">
+      <span class="blog-category">
+        ${escapeHTML(blog.category)}
+      </span>
+      <h3>${escapeHTML(blog.title)}</h3>
+      <p>${escapeHTML(blog.description)}</p>
+      <a href="${escapeHTML(blog.link)}">
+        Read Articles →
+      </a>
+    </article>
+  `).join("");
+}
+
+// ======================================
+// SUGGESTION FORM
+// ======================================
+
+const suggestForm = $("suggestForm");
+
+suggestForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const input = $("suggestionInput");
+  const suggestion = input?.value.trim();
+
+  if (!suggestion) return;
+
+  if (!auth.currentUser) {
+    alert("Please sign in before submitting a suggestion.");
     return;
   }
 
-  allTools.forEach(tool => {
-    const card = element("article", "tool-card");
+  const submitButton = suggestForm.querySelector(
+    'button[type="submit"]'
+  );
 
-    card.append(
-      element("span", "tool-category", tool.category || "Creative Tool"),
-      element("h3", "", tool.name || tool.title || "Untitled Tool"),
-      element("p", "", tool.description || "Explore this tool.")
-    );
-
-    const url = safeUrl(tool.url);
-
-    if (url) {
-      const link = element("a", "card-link", "Open Tool →");
-      link.href = url;
-      link.target = "_blank";
-      link.rel = "noopener noreferrer";
-      card.append(link);
-    }
-
-    toolsGrid.append(card);
-  });
-}
-
-async function loadTools() {
-  if (!toolsGrid) return;
-
-  message(toolsGrid, "Loading tools...");
+  if (submitButton) submitButton.disabled = true;
 
   try {
-    const q = query(
-      collection(db, "tools"),
-      where("status", "==", "published")
-    );
-
-    const snapshot = await getDocs(q);
-
-    allTools = snapshot.docs.map(item => ({
-      id: item.id,
-      ...item.data()
-    }));
-
-    renderTools();
-  } catch (error) {
-    console.error("Tools error:", error);
-    message(toolsGrid, "Unable to load tools.");
-  }
-}
-
-// Blogs
-async function loadBlogs() {
-  if (!blogsGrid) return;
-
-  message(blogsGrid, "Loading articles...");
-
-  try {
-    const q = query(
-      collection(db, "blogs"),
-      where("status", "==", "published")
-    );
-
-    const snapshot = await getDocs(q);
-    blogsGrid.replaceChildren();
-
-    if (snapshot.empty) {
-      message(blogsGrid, "New articles are coming soon.");
-      return;
-    }
-
-    snapshot.forEach(item => {
-      const blog = item.data();
-      const card = element("article", "blog-card");
-
-      const imageUrl = safeUrl(blog.image || blog.thumbnail);
-
-      if (imageUrl) {
-        const img = element("img");
-        img.src = imageUrl;
-        img.alt = blog.title || "Article image";
-        img.loading = "lazy";
-        card.append(img);
-      }
-
-      card.append(
-        element("span", "blog-category", blog.category || "QuickServe Blog"),
-        element("h3", "", blog.title || "Untitled Article"),
-        element(
-          "p",
-          "",
-          blog.excerpt || blog.description || "Read our latest article."
-        )
-      );
-
-      if (blog.content) {
-        const content = element("p", "blog-full-content", blog.content);
-        content.hidden = true;
-
-        const button = element("button", "read-more", "Read More");
-        button.type = "button";
-
-        button.addEventListener("click", () => {
-          content.hidden = !content.hidden;
-          button.textContent = content.hidden ? "Read More" : "Show Less";
-        });
-
-        card.append(button, content);
-      }
-
-      blogsGrid.append(card);
+    await addDoc(collection(db, "toolSubmissions"), {
+      suggestion,
+      userId: auth.currentUser.uid,
+      email: auth.currentUser.email || "",
+      status: "pending",
+      createdAt: serverTimestamp()
     });
+
+    alert("Thank you! Your suggestion has been submitted.");
+    suggestForm.reset();
+
   } catch (error) {
-    console.error("Blogs error:", error);
-    message(blogsGrid, "Unable to load articles.");
+    console.error("Suggestion error:", error);
+    alert("Could not submit your suggestion. Please try again.");
+  } finally {
+    if (submitButton) submitButton.disabled = false;
   }
-}
+});
 
-// Course and tool suggestion
-const suggestForm = $("suggestForm");
+// ======================================
+// INITIALISE
+// ======================================
 
-if (suggestForm) {
-  suggestForm.addEventListener("submit", async event => {
-    event.preventDefault();
+updateYear();
+renderCourses();
+renderTools();
+renderBlogs();
 
-    const input = $("suggestionInput");
-    const suggestion = input?.value.trim();
-
-    if (!suggestion) return;
-
-    const button = suggestForm.querySelector("button");
-    button.disabled = true;
-    button.textContent = "Submitting...";
-
-    try {
-      if (!currentUser) {
-        const result = await signInWithPopup(auth, googleProvider);
-        currentUser = result.user;
-      }
-
-      await addDoc(collection(db, "toolSubmissions"), {
-        uid: currentUser.uid,
-        email: currentUser.email || "",
-        name: suggestion,
-        description: suggestion,
-        url: "",
-        status: "pending",
-        createdAt: serverTimestamp()
-      });
-
-      suggestForm.reset();
-      button.textContent = "Suggestion Sent ✓";
-    } catch (error) {
-      console.error("Suggestion error:", error);
-      button.textContent = "Try Again";
-      alert("Suggestion could not be submitted. Please check your login and Firestore rules.");
-    } finally {
-      button.disabled = false;
-
-      setTimeout(() => {
-        button.textContent = "Send Suggestion →";
-      }, 2500);
-    }
-  });
-}
-
-// Footer year
-const year = $("year");
-if (year) year.textContent = new Date().getFullYear();
-
-// Start
-loadCourses();
-loadTools();
-loadBlogs();
-    
+console.log("QuickServe Discover loaded successfully.");
