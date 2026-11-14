@@ -4,109 +4,150 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#080b16">
+  <meta name="theme-color" content="#080b18">
   <title>Course Learning | QuickServe</title>
+  <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="course.css">
 </head>
-
 <body>
 
-  <div class="course-layout">
+<header class="topbar">
+  <a href="index.html" class="brand">
+    <span class="brand-mark">Q</span>
+    <span>Quick<span>Serve</span></span>
+  </a>
 
-    <aside class="course-sidebar">
-      <a href="discover.html" class="brand">
-        <span class="brand-icon">Q</span>
-        <span>QuickServe</span>
-      </a>
+  <nav class="top-nav">
+    <a href="index.html">Home</a>
+    <a href="discover.html">Discover</a>
+    <a href="my-learning.html">My Learning</a>
+  </nav>
 
-      <p class="side-label">LEARNING</p>
+  <a href="profile.html" class="profile-link">My Profile</a>
+</header>
 
-      <a href="discover.html" class="side-link">⌂ Dashboard</a>
-      <a href="discover.html#courses" class="side-link active">▣ All Courses</a>
-      <a href="discover.html#blogs" class="side-link">▤ Articles</a>
+<div class="course-page">
 
-      <div class="sidebar-bottom">
-        <div class="help-box">
-          <span>Need help?</span>
-          <p>Explore your learning journey with QuickServe.</p>
-        </div>
+  <div class="course-breadcrumb">
+    <a href="discover.html">Discover</a>
+    <span> / </span>
+    <span>Course Learning</span>
+  </div>
+
+  <section class="course-hero">
+    <div class="course-hero-content">
+      <span id="courseCategory" class="course-category">LOADING</span>
+
+      <h1 id="courseTitle">Loading course...</h1>
+
+      <p id="courseDescription">
+        Please wait while we load your course information.
+      </p>
+
+      <div class="course-info">
+        <span>Level: <strong id="courseLevel">--</strong></span>
+        <span>Duration: <strong id="courseDuration">--</strong></span>
+        <span id="lessonCount">0 Lessons</span>
       </div>
-    </aside>
+
+      <div id="courseAccessMessage" class="course-access-message">
+        Checking course access...
+      </div>
+    </div>
+
+    <div class="course-hero-art">
+      <div class="course-art-orb"></div>
+      <div class="course-art-letter">Q</div>
+      <span class="art-floating">✦ LEARN & GROW</span>
+    </div>
+  </section>
+
+  <div id="courseNotice" class="course-notice" role="status">
+    Loading course content...
+  </div>
+
+  <section class="course-layout">
 
     <main class="course-main">
 
-      <header class="course-topbar">
-        <a href="discover.html" class="back-link">← Back to courses</a>
-        <span class="platform-label">QUICKSERVE ACADEMY</span>
-      </header>
-
-      <section class="course-hero">
-        <div class="hero-content">
-          <span id="courseCategory" class="category-label">DESIGN</span>
-
-          <h1 id="courseTitle">Loading course...</h1>
-
-          <p id="courseDescription">
-            Your learning journey starts here.
-          </p>
-
-          <div class="hero-meta">
-            <span id="courseLevel">Beginner</span>
-            <span id="courseDuration">Self paced</span>
-            <span id="courseLessons">Lessons</span>
-          </div>
-
-          <div id="courseAccessMessage" class="access-message"></div>
+      <div class="course-section-heading">
+        <div>
+          <span class="eyebrow">YOUR LEARNING PATH</span>
+          <h2>Course Curriculum</h2>
+          <p>Follow the chapters and learn step by step.</p>
         </div>
 
-        <div class="hero-decoration">
-          <span>✦</span>
-          <small>LEARN · BUILD · GROW</small>
+        <span id="courseLessons" class="lesson-count">0 Lessons</span>
+      </div>
+
+      <div id="chaptersContainer" class="chapters-container">
+        <div class="course-loading">
+          Loading chapters...
         </div>
-      </section>
-
-      <section class="learning-section">
-
-        <div class="section-heading">
-          <div>
-            <span class="eyebrow">YOUR CURRICULUM</span>
-            <h2>Course Content</h2>
-            <p>Follow the lessons step by step.</p>
-          </div>
-
-          <span id="lessonCount" class="lesson-count">0 Lessons</span>
-        </div>
-
-        <div id="courseNotice" class="course-notice">
-          Loading course content...
-        </div>
-
-        <div id="chaptersContainer" class="chapters-container"></div>
-
-      </section>
-
-      <section id="lessonViewer" class="lesson-viewer" hidden>
-        <div class="lesson-heading">
-          <span class="eyebrow">CURRENT LESSON</span>
-          <h2 id="lessonTitle">Lesson Title</h2>
-        </div>
-
-        <div id="lessonVideo" class="lesson-video"></div>
-
-        <article id="lessonContent" class="lesson-content"></article>
-
-        <div id="lessonActions" class="lesson-actions"></div>
-      </section>
-
-      <footer class="course-footer">
-        <span>© <span id="year"></span> QuickServe Academy</span>
-        <span>Keep learning. Keep growing.</span>
-      </footer>
+      </div>
 
     </main>
-  </div>
 
-  <script type="module" src="course.js"></script>
+    <aside class="course-sidebar">
+      <div class="course-sidebar-card">
+        <span class="eyebrow">YOUR JOURNEY</span>
+        <h3>Keep Learning</h3>
+        <p>
+          Complete your lessons one by one and build your knowledge.
+        </p>
 
+        <div class="learning-decoration">
+          <span>✧</span>
+        </div>
+
+        <a href="discover.html" class="course-back-link">
+          Explore More Courses →
+        </a>
+      </div>
+    </aside>
+
+  </section>
+
+  <section id="lessonViewer" class="lesson-viewer" hidden>
+    <div class="lesson-viewer-header">
+      <div>
+        <span class="eyebrow">COURSE LESSON</span>
+        <h2 id="lessonTitle">Lesson Title</h2>
+      </div>
+
+      <a href="#chaptersContainer" class="back-to-chapters">
+        ↑ Chapters
+      </a>
+    </div>
+
+    <div id="lessonVideo" class="lesson-video"></div>
+
+    <article id="lessonContent" class="lesson-content">
+      Lesson content will appear here.
+    </article>
+
+    <div id="lessonActions" class="lesson-actions"></div>
+  </section>
+
+  <footer class="course-footer">
+    <a href="index.html" class="brand">
+      <span class="brand-mark">Q</span>
+      <span>Quick<span>Serve</span></span>
+    </a>
+
+    <p>Learn new skills. Create new possibilities.</p>
+
+    <div>
+      <a href="discover.html">Discover</a>
+      <a href="contact.html">Contact</a>
+      <a href="blogs.html">Blogs</a>
+    </div>
+
+    <small>© <span id="year"></span> QuickServe. All rights reserved.</small>
+  </footer>
+
+</div>
+
+<script type="module" src="course.js"></script>
 </body>
 </html>
