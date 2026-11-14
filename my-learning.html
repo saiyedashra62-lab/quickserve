@@ -1,0 +1,149 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080c19">
+  <title>My Learning | QuickServe</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="my-learning.css">
+</head>
+
+<body>
+
+  <header class="topbar">
+    <a href="index.html" class="brand">
+      <span class="brand-icon">Q</span>
+      <span>QuickServe</span>
+    </a>
+
+    <nav class="top-nav">
+      <a href="index.html">Home</a>
+      <a href="discover.html">Discover</a>
+      <a href="blogs.html">Blogs</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+
+    <a href="profile.html" class="profile-link">My Profile</a>
+  </header>
+
+  <aside class="sidebar">
+    <div class="sidebar-label">MENU</div>
+
+    <a href="index.html">⌂ <span>Home</span></a>
+    <a href="discover.html">◈ <span>Discover</span></a>
+    <a href="my-learning.html" class="active">▣ <span>My Learning</span></a>
+    <a href="my-orders.html">▤ <span>My Orders</span></a>
+    <a href="discover.html">▦ <span>All Courses</span></a>
+    <a href="tools.html">⚙ <span>Tools</span></a>
+    <a href="blogs.html">▧ <span>Articles & Blogs</span></a>
+    <a href="profile.html">◉ <span>Profile</span></a>
+    <a href="contact.html">✉ <span>Contact Us</span></a>
+
+    <div class="sidebar-promo">
+      <h3>Keep Growing!</h3>
+      <p>Learn something new every day.</p>
+      <a href="discover.html">Explore Courses →</a>
+    </div>
+  </aside>
+
+  <main class="learning-main">
+
+    <section class="learning-heading">
+      <div>
+        <span class="learning-eyebrow">YOUR LEARNING SPACE</span>
+        <h1>My Learning<span>.</span></h1>
+        <p>Continue your journey and keep building new skills.</p>
+      </div>
+
+      <a href="discover.html" class="explore-button">
+        + Explore Courses
+      </a>
+    </section>
+
+    <section class="learning-stats">
+      <div class="learning-stat">
+        <span class="stat-icon">▣</span>
+        <div>
+          <h2 id="enrolledCount">0</h2>
+          <p>Enrolled Courses</p>
+        </div>
+      </div>
+
+      <div class="learning-stat">
+        <span class="stat-icon">◷</span>
+        <div>
+          <h2 id="completedCount">0</h2>
+          <p>Completed Courses</p>
+        </div>
+      </div>
+
+      <div class="learning-stat">
+        <span class="stat-icon">↗</span>
+        <div>
+          <h2 id="learningProgress">0%</h2>
+          <p>Overall Progress</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="learning-section">
+      <div class="learning-section-heading">
+        <div>
+          <h2>Continue Learning</h2>
+          <p>Pick up exactly where you left off.</p>
+        </div>
+      </div>
+
+      <div id="continueLearning" class="learning-grid">
+        <div class="learning-loading">
+          Loading your learning dashboard...
+        </div>
+      </div>
+    </section>
+
+    <section class="learning-section">
+      <div class="learning-section-heading">
+        <div>
+          <h2>My Courses</h2>
+          <p>All your enrolled courses in one place.</p>
+        </div>
+      </div>
+
+      <div id="myCoursesGrid" class="learning-grid">
+        <div class="learning-loading">
+          Your courses will appear here.
+        </div>
+      </div>
+
+      <div id="learningEmpty" class="learning-empty" hidden>
+        <div class="empty-icon">▣</div>
+        <h3>No courses yet</h3>
+        <p>You haven't enrolled in any courses. Start learning today!</p>
+        <a href="discover.html" class="explore-button">
+          Discover Courses
+        </a>
+      </div>
+    </section>
+
+    <section class="learning-motivation">
+      <div>
+        <span>YOUR NEXT STEP</span>
+        <h2>Small steps. Big skills.</h2>
+        <p>Stay consistent, practice regularly and keep moving forward.</p>
+      </div>
+      <a href="discover.html">Explore More →</a>
+    </section>
+
+  </main>
+
+  <footer class="learning-footer">
+    <p>© <span id="year"></span> QuickServe. All rights reserved.</p>
+  </footer>
+
+  <script type="module" src="my-learning.js"></script>
+
+</body>
+  </html>
+  
