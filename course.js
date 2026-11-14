@@ -1,5 +1,4 @@
-
-import { auth, db } from "./firebase.js";
+import { db } from "./firebase.js";
 
 import {
   doc,
@@ -11,35 +10,44 @@ import {
   orderBy
 } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
 
+const $ = id => document.getElementById(id);
+
 const params = new URLSearchParams(window.location.search);
 const courseId = params.get("id");
 
-const titleEl = document.getElementById("courseTitle");
-const descriptionEl = document.getElementById("courseDescription");
-const categoryEl = document.getElementById("courseCategory");
-const levelEl = document.getElementById("courseLevel");
-const durationEl = document.getElementById("courseDuration");
-const lessonsEl = document.getElementById("courseLessons");
-const noticeEl = document.getElementById("courseNotice");
-const chaptersEl = document.getElementById("chaptersContainer");
-const lessonViewer = document.getElementById("lessonViewer");
-const lessonTitle = document.getElementById("lessonTitle");
-const lessonContent = document.getElementById("lessonContent");
-const lessonVideo = document.getElementById("lessonVideo");
-const lessonActions = document.getElementById("lessonActions");
-const accessMessage = document.getElementById("courseAccessMessage");
-const lessonCount = document.getElementById("lessonCount");
+const titleEl = $("courseTitle");
+const descriptionEl = $("courseDescription");
+const categoryEl = $("courseCategory");
+const levelEl = $("courseLevel");
+const durationEl = $("courseDuration");
+const lessonsEl = $("courseLessons");
+const noticeEl = $("courseNotice");
+const chaptersEl = $("chaptersContainer");
+const lessonViewer = $("lessonViewer");
+const lessonTitle = $("lessonTitle");
+const lessonContent = $("lessonContent");
+const lessonVideo = $("lessonVideo");
+const lessonActions = $("lessonActions");
+const accessMessage = $("courseAccessMessage");
+const lessonCount = $("lessonCount");
 
-document.getElementById("year").textContent =
-  new Date().getFullYear();
-
-let courseData = null;
 let allLessons = [];
-let activeLessonIndex = -1;
 let hasAccess = false;
+let activeLessonIndex = -1;
+
+if ($("year")) {
+  $("year").textContent = new Date().getFullYear();
+}
 
 function showNotice(message) {
-  noticeEl.textContent = message;
+  if (noticeEl) noticeEl.textContent = message;
+}
+
+function addText(parent, tag, text) {
+  const el = document.createElement(tag);
+  el.textContent = text || "";
+  parent.append(el);
+  return el;
 }
 
 function safeYouTubeEmbed(value) {
@@ -47,11 +55,12 @@ function safeYouTubeEmbed(value) {
     const url = new URL(value);
     let videoId = "";
 
-    if (url.hostname.includes("youtu.be")) {
+    if (url.hostname === "youtu.be") {
       videoId = url.pathname.slice(1);
     } else if (
-      url.hostname.includes("youtube.com") ||
-      url.hostname.includes("youtube-nocookie.com")
+      ["youtube.com", "www.youtube.com", "m.youtube.com",
+       "www.youtube-nocookie.com", "youtube-nocookie.com"]
+        .includes(url.hostname)
     ) {
       if (url.pathname === "/watch") {
         videoId = url.searchParams.get("v") || "";
@@ -68,13 +77,6 @@ function safeYouTubeEmbed(value) {
   }
 }
 
-function addText(parent, tag, text) {
-  const element = document.createElement(tag);
-  element.textContent = text || "";
-  parent.append(element);
-  return element;
-}
-
 function formatLessonContent(content) {
   lessonContent.replaceChildren();
 
@@ -87,7 +89,7 @@ function formatLessonContent(content) {
     return;
   }
 
-  const blocks = content.split(/\n{2,}/);
+  const blocks = String(content).split(/\n{2,}/);
 
   blocks.forEach(block => {
     const trimmed = block.trim();
@@ -117,15 +119,15 @@ function showVideo(videoUrl) {
   lessonVideo.replaceChildren();
 
   const embedUrl = safeYouTubeEmbed(videoUrl);
-
   if (!embedUrl) return;
 
   const frame = document.createElement("iframe");
+
   frame.src = embedUrl;
   frame.title = "Course lesson video";
   frame.loading = "lazy";
   frame.allow =
-    "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+    "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
   frame.allowFullscreen = true;
 
   lessonVideo.append(frame);
@@ -133,7 +135,7 @@ function showVideo(videoUrl) {
 
 function renderLesson(index) {
   if (!hasAccess) {
-    showNotice("This Premium course is locked.");
+    showNotice("This premium course is locked.");
     return;
   }
 
@@ -144,22 +146,36 @@ function renderLesson(index) {
   lessonViewer.hidden = false;
 
   lessonTitle.textContent = lesson.title || "Lesson";
-  formatLessonContent(lesson.content || lesson.explanation || "");
+
+  formatLessonContent(
+    lesson.content || lesson.explanation || ""
+  );
+
   showVideo(lesson.videoUrl || lesson.youtubeUrl || "");
 
   lessonActions.replaceChildren();
 
   if (index > 0) {
     const previous = document.createElement("button");
+    previous.type = "button";
     previous.textContent = "← Previous Lesson";
-    previous.addEventListener("click", () => renderLesson(index - 1));
+
+    previous.addEventListener("click", () => {
+      renderLesson(index - 1);
+    });
+
     lessonActions.append(previous);
   }
 
   if (index < allLessons.length - 1) {
     const next = document.createElement("button");
+    next.type = "button";
     next.textContent = "Next Lesson →";
-    next.addEventListener("click", () => renderLesson(index + 1));
+
+    next.addEventListener("click", () => {
+      renderLesson(index + 1);
+    });
+
     lessonActions.append(next);
   }
 
@@ -175,6 +191,8 @@ function renderChapters(chapters) {
 
   if (!chapters.length) {
     showNotice("Course lessons are being prepared.");
+    lessonCount.textContent = "0 Lessons";
+    lessonsEl.textContent = "0 Lessons";
     return;
   }
 
@@ -230,7 +248,11 @@ function renderChapters(chapters) {
 
       const button = document.createElement("button");
       button.type = "button";
-      button.textContent = hasAccess ? "Start Lesson →" : "🔒 Locked";
+
+      button.textContent = hasAccess
+        ? "Start Lesson →"
+        : "🔒 Locked";
+
       button.disabled = !hasAccess;
 
       button.addEventListener("click", () => {
@@ -251,12 +273,14 @@ function renderChapters(chapters) {
 
 async function loadCourse() {
   if (!courseId) {
-    showNotice("Course ID missing. Open a course from the catalogue.");
     titleEl.textContent = "Course not selected";
+    showNotice("Open a course from the course catalogue.");
     return;
   }
 
   try {
+    showNotice("Loading course content...");
+
     const courseRef = doc(db, "courses", courseId);
     const courseSnapshot = await getDoc(courseRef);
 
@@ -266,7 +290,7 @@ async function loadCourse() {
       return;
     }
 
-    courseData = courseSnapshot.data();
+    const courseData = courseSnapshot.data();
 
     if (courseData.status !== "published") {
       titleEl.textContent = "Course unavailable";
@@ -275,6 +299,7 @@ async function loadCourse() {
     }
 
     titleEl.textContent = courseData.title || "QuickServe Course";
+
     descriptionEl.textContent =
       courseData.description || "Start your learning journey.";
 
@@ -284,17 +309,16 @@ async function loadCourse() {
     levelEl.textContent = courseData.level || "Beginner";
     durationEl.textContent = courseData.duration || "Self paced";
 
-    const courseType =
-      (courseData.type || "premium").toLowerCase();
+    const courseType = String(
+      courseData.type || courseData.access ||
+      (courseId === "ui-ux-beginners" ? "free" : "premium")
+    ).toLowerCase();
 
     hasAccess = courseType === "free";
 
-    if (hasAccess) {
-      accessMessage.textContent = "✓ Free course — start learning";
-    } else {
-      accessMessage.textContent =
-        "🔒 Premium course — purchase verification required.";
-    }
+    accessMessage.textContent = hasAccess
+      ? "✓ Free course — start learning"
+      : "🔒 Premium course — purchase verification required.";
 
     const chaptersQuery = query(
       collection(db, "courses", courseId, "chapters"),
@@ -336,17 +360,17 @@ async function loadCourse() {
 
     if (!hasAccess) {
       showNotice(
-        "Premium content is locked. Complete the purchase and access verification to unlock lessons."
+        "Premium content is locked. Purchase verification and secure access are required."
       );
     }
 
   } catch (error) {
     console.error("Course loading error:", error);
+
     showNotice(
-      "Unable to load course. Please check the Firebase setup and permissions."
+      "Unable to load course. Please check Firebase permissions and indexes."
     );
   }
 }
 
 loadCourse();
-    
