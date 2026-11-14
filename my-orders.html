@@ -1,0 +1,145 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080c19">
+  <title>My Orders | QuickServe</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="my-orders.css">
+</head>
+
+<body>
+
+  <header class="topbar">
+    <a href="index.html" class="brand">
+      <span class="brand-icon">Q</span>
+      <span>QuickServe</span>
+    </a>
+
+    <nav class="top-nav">
+      <a href="index.html">Home</a>
+      <a href="discover.html">Discover</a>
+      <a href="blogs.html">Blogs</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+
+    <a href="profile.html" class="profile-link">My Profile</a>
+  </header>
+
+  <aside class="sidebar">
+    <div class="sidebar-label">MENU</div>
+
+    <a href="index.html">⌂ <span>Home</span></a>
+    <a href="discover.html">◈ <span>Discover</span></a>
+    <a href="my-learning.html">▣ <span>My Learning</span></a>
+    <a href="my-orders.html" class="active">▤ <span>My Orders</span></a>
+    <a href="discover.html">▦ <span>All Courses</span></a>
+    <a href="tools.html">⚙ <span>Tools</span></a>
+    <a href="blogs.html">▧ <span>Articles & Blogs</span></a>
+    <a href="profile.html">◉ <span>Profile</span></a>
+    <a href="contact.html">✉ <span>Contact Us</span></a>
+
+    <div class="sidebar-promo">
+      <h3>Need a Service?</h3>
+      <p>Explore our creative services.</p>
+      <a href="index.html#services">Explore Services →</a>
+    </div>
+  </aside>
+
+  <main class="orders-main">
+
+    <section class="orders-heading">
+      <div>
+        <span class="orders-eyebrow">YOUR ACCOUNT</span>
+        <h1>My Orders<span>.</span></h1>
+        <p>Track your requests and stay updated on your orders.</p>
+      </div>
+
+      <a href="index.html#services" class="new-order-button">
+        + Place New Order
+      </a>
+    </section>
+
+    <section class="orders-stats">
+
+      <div class="order-stat">
+        <span class="order-stat-icon">▤</span>
+        <div>
+          <h2 id="totalOrders">0</h2>
+          <p>Total Orders</p>
+        </div>
+      </div>
+
+      <div class="order-stat">
+        <span class="order-stat-icon">◷</span>
+        <div>
+          <h2 id="pendingOrders">0</h2>
+          <p>Pending Orders</p>
+        </div>
+      </div>
+
+      <div class="order-stat">
+        <span class="order-stat-icon">✓</span>
+        <div>
+          <h2 id="completedOrders">0</h2>
+          <p>Completed Orders</p>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="orders-section">
+
+      <div class="orders-section-heading">
+        <div>
+          <h2>Order History</h2>
+          <p>All your service requests in one place.</p>
+        </div>
+
+        <select id="orderFilter" aria-label="Filter orders">
+          <option value="all">All Orders</option>
+          <option value="pending">Pending</option>
+          <option value="processing">Processing</option>
+          <option value="completed">Completed</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+      </div>
+
+      <div id="ordersList" class="orders-list">
+        <div class="orders-loading">
+          Loading your orders...
+        </div>
+      </div>
+
+      <div id="ordersEmpty" class="orders-empty" hidden>
+        <div class="orders-empty-icon">▤</div>
+        <h3>No orders found</h3>
+        <p>Your service orders will appear here after you place an order.</p>
+        <a href="index.html#services" class="new-order-button">
+          Explore Services
+        </a>
+      </div>
+
+    </section>
+
+    <section class="orders-help">
+      <div>
+        <span>NEED HELP?</span>
+        <h2>Have a question about your order?</h2>
+        <p>Contact our team for assistance with your service request.</p>
+      </div>
+      <a href="contact.html">Contact Support →</a>
+    </section>
+
+  </main>
+
+  <footer class="orders-footer">
+    <p>© <span id="year"></span> QuickServe. All rights reserved.</p>
+  </footer>
+
+  <script type="module" src="my-orders.js"></script>
+
+</body>
+</html>
