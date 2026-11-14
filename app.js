@@ -20,8 +20,6 @@ import {
 } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
 
 const ADMIN_EMAIL = "saiyedashra62@gmail.com";
-
-// Payment receiver details
 const UPI_ID = "Syeadashra@fam";
 const UPI_NAME = "QuickServe";
 
@@ -75,7 +73,6 @@ function escapeHTML(value = "") {
   })[char]);
 }
 
-// Create a UPI payment link for this order.
 function createUpiLink(orderId, amount) {
   const params = new URLSearchParams({
     pa: UPI_ID,
@@ -88,7 +85,6 @@ function createUpiLink(orderId, amount) {
   return `upi://pay?${params.toString()}`;
 }
 
-// Generate QR directly in the browser. No QR image file is needed.
 function generatePaymentQR(orderId, amount) {
   const container = $("paymentQr");
   container.innerHTML = "";
@@ -306,7 +302,6 @@ onAuthStateChanged(auth, async user => {
 
 $("loginBtn").addEventListener("click", login);
 $("logoutBtn").addEventListener("click", logout);
-
 $("copyUpiBtn").addEventListener("click", copyUpiId);
 $("payUpiBtn").addEventListener("click", openUpiApp);
 
@@ -365,7 +360,6 @@ $("orderForm").addEventListener("submit", async event => {
     $("transactionId").value = "";
 
     generatePaymentQR(result.id, selectedService.price);
-
     showSection("paymentSection");
 
     toast("Order created. Complete payment and submit transaction ID.");
@@ -410,6 +404,7 @@ $("paymentForm").addEventListener("submit", async event => {
     });
 
     toast("Payment details submitted for admin verification.");
+
     currentOrderId = null;
     currentPaymentLink = "";
 
@@ -470,6 +465,7 @@ async function loadMyOrders() {
 
   } catch (error) {
     console.error(error);
+
     $("ordersList").innerHTML = `
       <div class="order-card">
         <p>Could not load orders. Check Firestore indexes and rules.</p>
@@ -508,7 +504,6 @@ async function loadAdminOrders() {
           <p><b>Transaction ID:</b> ${escapeHTML(data.transactionId || "Not submitted")}</p>
           <p><b>Payment:</b> ${escapeHTML(statusLabel(data.paymentStatus))}</p>
           <p><b>Order:</b> ${escapeHTML(statusLabel(data.orderStatus))}</p>
-
           <div class="admin-actions">
             <button class="btn btn-primary verify-btn" data-id="${escapeHTML(item.id)}">
               Verify payment
@@ -552,6 +547,7 @@ async function loadAdminOrders() {
 
   } catch (error) {
     console.error(error);
+
     $("adminOrders").innerHTML = `
       <div class="admin-card">
         <p>Admin orders could not load: ${escapeHTML(error.message)}</p>
@@ -607,6 +603,7 @@ async function updateDelivery(orderId, note, url) {
     });
 
     toast("Order marked delivered.");
+
     await loadAdminOrders();
     await loadMyOrders();
 
@@ -618,4 +615,4 @@ async function updateDelivery(orderId, note, url) {
 
 renderServices();
 $("year").textContent = new Date().getFullYear();
-  
+                               
