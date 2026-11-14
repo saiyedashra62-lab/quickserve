@@ -4,90 +4,222 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#080914">
-  <title>Explore Tools & Blogs | QuickServe</title>
+  <meta name="theme-color" content="#090811">
+  <title>QuickServe — Learning Dashboard</title>
+  <meta name="description" content="Discover courses, digital tools and creative learning resources.">
   <link rel="stylesheet" href="discover.css">
 </head>
+
 <body>
 
-  <header class="topbar">
-    <a href="index.html" class="logo">Quick<span>Serve</span></a>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="#tools">Tools</a>
-      <a href="#blogs">Blogs</a>
-    </nav>
-    <a href="#submit" class="nav-btn">Suggest Tool</a>
-  </header>
+<div class="dashboard">
 
-  <main>
-    <section class="hero">
-      <span class="eyebrow">DISCOVER • CREATE • GROW</span>
-      <h1>Explore useful <span>digital tools.</span></h1>
-      <p>Discover AI tools, free resources, premium tools and helpful articles — all in one place.</p>
-      <a href="#tools" class="primary-btn">Explore Tools →</a>
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+
+    <a href="index.html" class="brand">
+      <span class="brand-icon">Q</span>
+      <span>quickserve<span class="brand-plus">+</span></span>
+    </a>
+
+    <div class="sidebar-label">WORKSPACE</div>
+
+    <nav class="side-nav">
+      <a href="index.html" class="side-link">
+        <span>⌂</span> Home
+      </a>
+      <a href="#saved" class="side-link">
+        <span>♡</span> Saved
+      </a>
+    </nav>
+
+    <div class="sidebar-label">EXPLORE</div>
+
+    <nav class="side-nav">
+      <a href="#courses" class="side-link active">
+        <span>▦</span> All Courses
+      </a>
+      <a href="#courses" class="side-link">
+        <span>◎</span> User Psychology
+      </a>
+      <a href="#courses" class="side-link">
+        <span>⌁</span> Conversion
+      </a>
+      <a href="#courses" class="side-link">
+        <span>✧</span> Visual Design
+      </a>
+      <a href="#courses" class="side-link">
+        <span>▣</span> Product UX
+      </a>
+      <a href="#tools" class="side-link">
+        <span>✦</span> AI Tools
+      </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <div class="sidebar-promo">
+        <span>✦ QUICK TIP</span>
+        <p>Learn something new every day.</p>
+        <a href="#courses">Explore learning →</a>
+      </div>
+      <a href="index.html" class="back-home">← Back to QuickServe</a>
+    </div>
+
+  </aside>
+
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <button class="menu-toggle" id="menuToggle" type="button" aria-label="Toggle menu">☰</button>
+
+      <div class="breadcrumb">
+        <span>QuickServe</span>
+        <span>/</span>
+        <strong>Learning Platform</strong>
+      </div>
+
+      <div class="topbar-actions">
+        <a href="#suggest" class="topbar-link">Suggest a Tool</a>
+        <a href="#courses" class="profile-button">QS</a>
+      </div>
+    </header>
+
+
+    <!-- PAGE HEADING -->
+    <section class="page-heading">
+      <div>
+        <span class="eyebrow">✦ YOUR LEARNING SPACE</span>
+        <h1>UX/UI Product Design Courses</h1>
+        <p>Explore practical courses, improve your skills and discover new ideas.</p>
+      </div>
+
+      <div class="heading-badge">
+        <span class="live-dot"></span>
+        Discover & Learn
+      </div>
     </section>
 
-    <section class="section" id="tools">
-      <div class="heading">
-        <span class="eyebrow">TOOL DIRECTORY</span>
-        <h2>Find your next tool</h2>
-        <p>Explore tools selected to make your work easier.</p>
+
+    <!-- SEARCH -->
+    <section class="search-area">
+      <div class="search-box">
+        <span>⌕</span>
+        <input type="search" id="courseSearch" placeholder="Search courses, topics and skills...">
+        <span class="search-shortcut">⌘ K</span>
+      </div>
+    </section>
+
+
+    <!-- COURSE FILTERS -->
+    <section class="course-section" id="courses">
+
+      <div class="section-top">
+        <div>
+          <span class="eyebrow">CURATED LEARNING</span>
+          <h2>Explore Courses</h2>
+        </div>
+
+        <a href="#courses" class="view-all">View all →</a>
       </div>
 
-      <div class="filters">
-        <button class="filter active" data-category="all">All</button>
-        <button class="filter" data-category="ai">AI Tools</button>
-        <button class="filter" data-category="free">Free Tools</button>
-        <button class="filter" data-category="premium">Premium</button>
+      <div class="category-filters">
+        <button class="course-filter active" data-course-type="all" type="button">All Courses</button>
+        <button class="course-filter" data-course-type="free" type="button">Free</button>
+        <button class="course-filter" data-course-type="premium" type="button">Premium</button>
       </div>
 
-      <div id="toolsGrid" class="grid">
+      <div class="courses-grid" id="coursesGrid">
+        <div class="loading">Courses will appear here.</div>
+      </div>
+
+    </section>
+
+
+    <!-- TOOLS -->
+    <section class="course-section" id="tools">
+
+      <div class="section-top">
+        <div>
+          <span class="eyebrow">WORK SMARTER</span>
+          <h2>Discover Digital Tools</h2>
+          <p>Useful websites and AI tools for your daily work.</p>
+        </div>
+      </div>
+
+      <div class="filter-bar">
+        <button class="filter active" data-category="all" type="button">All Tools</button>
+        <button class="filter" data-category="ai" type="button">AI Tools</button>
+        <button class="filter" data-category="free" type="button">Free</button>
+        <button class="filter" data-category="premium" type="button">Premium</button>
+      </div>
+
+      <div class="tools-grid" id="toolsGrid">
         <p class="loading">Loading tools...</p>
       </div>
+
     </section>
 
-    <section class="section blog-section" id="blogs">
-      <div class="heading">
-        <span class="eyebrow">QUICKSERVE BLOG</span>
-        <h2>Latest articles</h2>
-        <p>Useful guides, ideas and digital updates.</p>
+
+    <!-- BLOGS -->
+    <section class="course-section" id="blogs">
+
+      <div class="section-top">
+        <div>
+          <span class="eyebrow">INSIGHTS & IDEAS</span>
+          <h2>Latest Articles</h2>
+          <p>Read helpful guides, digital tips and technology insights.</p>
+        </div>
       </div>
 
-      <div id="blogsGrid" class="grid">
+      <div class="blogs-grid" id="blogsGrid">
         <p class="loading">Loading articles...</p>
       </div>
+
     </section>
 
-    <section class="section submit-section" id="submit">
-      <div class="submit-box">
-        <span class="eyebrow">COMMUNITY</span>
-        <h2>Know a useful tool?</h2>
-        <p>Suggest a website or tool for our directory. Our team will review it before publishing.</p>
 
-        <form id="suggestForm">
-          <label for="toolName">Tool name</label>
-          <input id="toolName" maxlength="80" required placeholder="Enter tool name">
+    <!-- SUGGEST TOOL -->
+    <section class="course-section suggest-section" id="suggest">
 
-          <label for="toolUrl">Website URL</label>
-          <input id="toolUrl" type="url" required placeholder="https://example.com">
-
-          <label for="toolDescription">Short description</label>
-          <textarea id="toolDescription" maxlength="500" required placeholder="What does this tool do?"></textarea>
-
-          <button class="primary-btn" id="suggestBtn" type="submit">Submit Suggestion</button>
-          <p id="suggestMessage" class="message" aria-live="polite"></p>
-        </form>
+      <div class="section-top">
+        <div>
+          <span class="eyebrow">COMMUNITY</span>
+          <h2>Suggest a Useful Tool</h2>
+          <p>Share a website or digital tool with the QuickServe community.</p>
+        </div>
       </div>
+
+      <form class="suggest-form" id="suggestForm">
+
+        <label for="toolName">Tool Name</label>
+        <input id="toolName" type="text" placeholder="Enter tool name" required>
+
+        <label for="toolUrl">Website URL</label>
+        <input id="toolUrl" type="url" placeholder="https://example.com" required>
+
+        <label for="toolDescription">Description</label>
+        <textarea id="toolDescription" rows="4" placeholder="What does this tool do?" required></textarea>
+
+        <button type="submit" id="suggestBtn" class="primary-btn">Submit Suggestion</button>
+        <p id="suggestMessage" aria-live="polite"></p>
+
+      </form>
+
     </section>
+
+
+    <footer class="dashboard-footer">
+      <span>© <span id="year"></span> QuickServe</span>
+      <span>Designed for curious minds ✦</span>
+    </footer>
+
   </main>
+</div>
 
-  <footer>
-    <a href="index.html" class="logo">Quick<span>Serve</span></a>
-    <p>Useful digital tools. Simple discoveries.</p>
-    <small>© <span id="year"></span> QuickServe</small>
-  </footer>
+<script type="module" src="discover.js"></script>
 
-  <script type="module" src="discover.js"></script>
 </body>
 </html>
