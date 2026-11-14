@@ -4,209 +4,293 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#080914">
-  <title>QuickServe — Creative Services</title>
+  <meta name="theme-color" content="#080817">
+  <meta name="description" content="QuickServe — Creative services, practical learning and useful tools.">
+  <title>QuickServe — Create. Learn. Grow.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
 
-<header class="navbar">
-  <a class="logo" href="#">Quick<span>Serve</span><b>.</b></a>
-  <nav>
-    <a href="#services">Services</a>
-    <a href="#how">How it works</a>
-    <button id="loginBtn" class="btn btn-outline">Google Sign In</button>
-    <button id="logoutBtn" class="btn btn-outline hidden">Logout</button>
+<div class="ambient ambient-one"></div>
+<div class="ambient ambient-two"></div>
+<div class="sparkles" aria-hidden="true"></div>
+
+<header class="topbar">
+  <a class="brand" href="index.html">
+    <span class="brand-icon">Q</span>
+    <span>Quick<span class="brand-accent">Serve</span></span>
+  </a>
+
+  <nav class="top-nav" id="topNav">
+    <a href="index.html" class="active">Home</a>
+    <a href="discover.html">Discover</a>
+    <a href="blogs.html">Blogs</a>
+    <a href="contact.html">Contact</a>
   </nav>
+
+  <div class="top-actions">
+    <a href="profile.html" class="profile-button">My Profile</a>
+    <button class="mobile-menu" id="mobileMenu" aria-label="Open menu">☰</button>
+  </div>
 </header>
 
-<section class="hero">
-  <div class="hero-content">
-    <span class="eyebrow">YOUR CREATIVE PARTNER</span>
-    <h1>Creative work.<br><span>Made simple.</span></h1>
-    <p>Posts, banners, thumbnails, resumes, QR codes and more — order your creative service in a few simple steps.</p>
-    <a href="#services" class="btn btn-primary">Explore Services ↗</a>
-  </div>
+<div class="app-layout">
 
-  <div class="hero-art">
-    <div class="orb orb-one"></div>
-    <div class="orb orb-two"></div>
-    <div class="hero-card">
-      <span>QUICKSERVE STUDIO</span>
-      <h2>Ideas into<br>visuals.</h2>
-      <div class="hero-line"></div>
-      <small>DESIGN • CREATE • DELIVER</small>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-label">MENU</div>
+    <a class="side-link active" href="index.html"><span>⌂</span> Home</a>
+    <a class="side-link" href="discover.html"><span>◈</span> Discover</a>
+    <a class="side-link" href="learning.html"><span>▤</span> My Learning</a>
+    <a class="side-link" href="orders.html"><span>▣</span> My Orders</a>
+
+    <div class="sidebar-label">EXPLORE</div>
+    <a class="side-link" href="discover.html"><span>✧</span> All Courses</a>
+    <a class="side-link" href="tools.html"><span>⚒</span> Tools</a>
+    <a class="side-link" href="blogs.html"><span>▧</span> Articles & Blogs</a>
+
+    <div class="sidebar-label">ACCOUNT</div>
+    <a class="side-link" href="profile.html"><span>◉</span> Profile</a>
+    <a class="side-link" href="contact.html"><span>✉</span> Contact Us</a>
+
+    <div class="sidebar-bottom">
+      <div class="sidebar-promo">
+        <div class="promo-icon">✦</div>
+        <h3>Level up your skills</h3>
+        <p>Explore courses and grow with QuickServe.</p>
+        <a href="discover.html">Explore now →</a>
+      </div>
+      <p class="sidebar-version">QUICKSERVE © <span id="year"></span></p>
     </div>
-  </div>
-</section>
+  </aside>
 
-<section class="trust-row">
-  <div><strong>08</strong><span>Creative services</span></div>
-  <div><strong>48</strong><span>Sample styles</span></div>
-  <div><strong>24/7</strong><span>Online ordering</span></div>
-</section>
+  <main class="main-content">
 
-<main>
-  <section id="services" class="section">
-    <div class="section-heading">
-      <span class="eyebrow">WHAT WE OFFER</span>
-      <h2>Explore our services</h2>
-      <p>Choose a service, explore sample styles and submit your requirements.</p>
-    </div>
-    <div id="servicesGrid" class="services-grid"></div>
-  </section>
-
-  <section id="how" class="section how-section">
-    <div class="section-heading">
-      <span class="eyebrow">SIMPLE PROCESS</span>
-      <h2>How QuickServe works</h2>
-    </div>
-    <div class="steps-grid">
-      <article class="step">
-        <b>01</b>
-        <h3>Choose a service</h3>
-        <p>Select the service you need.</p>
-      </article>
-      <article class="step">
-        <b>02</b>
-        <h3>Choose a style</h3>
-        <p>Explore sample layouts and choose one.</p>
-      </article>
-      <article class="step">
-        <b>03</b>
-        <h3>Submit your order</h3>
-        <p>Enter your name and requirements.</p>
-      </article>
-      <article class="step">
-        <b>04</b>
-        <h3>Payment & delivery</h3>
-        <p>Submit payment details. Delivery follows verification.</p>
-      </article>
-    </div>
-  </section>
-
-  <section id="gallery" class="section hidden">
-    <div class="section-heading">
-      <span class="eyebrow">STYLE GALLERY</span>
-      <h2 id="galleryTitle">Choose your style</h2>
-      <p>These are sample layout previews, not finished custom designs.</p>
-    </div>
-
-    <div id="stylesGrid" class="styles-grid"></div>
-
-    <div class="preview-area">
-      <h3>Selected sample preview</h3>
-      <canvas id="previewCanvas" width="900" height="560"></canvas>
-      <p class="watermark-note">PREVIEW ONLY • QUICKSERVE</p>
-    </div>
-
-    <div class="order-box">
-      <h3>Submit your order</h3>
-      <p id="selectedServiceInfo"></p>
-
-      <form id="orderForm">
-        <label for="customerName">Your name</label>
-        <input id="customerName" required maxlength="80"
-          placeholder="Enter your name">
-
-        <label for="requirements">Your requirements / prompt</label>
-        <textarea id="requirements" required maxlength="2000"
-          rows="5"
-          placeholder="Describe exactly what you want. Include text, colours, size and other details."></textarea>
-
-        <button class="btn btn-primary full" type="submit">
-          Submit Order
-        </button>
-      </form>
-
-      <p class="small-note">
-        You must sign in with Google before placing an order.
-      </p>
-    </div>
-  </section>
-
-  <section id="paymentSection" class="section hidden">
-    <div class="payment-box">
-      <span class="eyebrow">PAYMENT SUBMISSION</span>
-      <h2>Complete your payment</h2>
-      <p id="paymentOrderInfo"></p>
-
-      <div style="background:#fff;color:#111;padding:18px;border-radius:16px;text-align:center;margin:20px auto;max-width:320px;">
-        <h3 style="color:#111;margin:0 0 12px;">Scan & Pay</h3>
-        <div id="paymentQr"
-          style="min-height:220px;display:flex;align-items:center;justify-content:center;overflow:hidden;">
-          <span style="color:#555;">Generating QR code...</span>
-        </div>
-        <p style="color:#555;font-size:12px;margin:12px 0 0;">
-          Scan using a supported UPI app
+    <section class="hero">
+      <div class="hero-content">
+        <div class="eyebrow"><span class="status-dot"></span> YOUR CREATIVE SPACE</div>
+        <h1>Create more.<br>Learn <span class="gradient-text">smarter.</span><br>Grow faster.</h1>
+        <p class="hero-description">
+          Discover creative services, powerful tools and practical courses
+          — everything you need in one place.
         </p>
-      </div>
 
-      <div style="background:rgba(120,100,255,.10);border:1px solid rgba(150,130,255,.3);border-radius:14px;padding:18px;margin:18px 0;">
-        <h3 style="margin-top:0;">Pay using UPI ID</h3>
-        <p style="margin-bottom:8px;">UPI ID</p>
-
-        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-          <strong id="upiIdText" style="font-size:17px;word-break:break-all;">Syeadashra@fam</strong>
-          <button type="button" id="copyUpiBtn" class="btn btn-outline">
-            Copy UPI ID
-          </button>
+        <div class="hero-buttons">
+          <a href="discover.html" class="btn btn-primary">Explore Courses <span>↗</span></a>
+          <a href="#services" class="btn btn-glass">Explore Services</a>
         </div>
 
-        <button type="button" id="payUpiBtn"
-          class="btn btn-primary full" style="margin-top:15px;">
-          Pay using UPI App ↗
-        </button>
+        <div class="hero-trust">
+          <span>✦ Creative services</span>
+          <span>✦ Practical learning</span>
+          <span>✦ Useful tools</span>
+        </div>
       </div>
 
-      <p class="small-note">
-        Before paying, check that the UPI app shows the correct receiver and order amount.
-      </p>
+      <div class="hero-visual">
+        <div class="orb orb-large"></div>
+        <div class="orb orb-small"></div>
 
-      <form id="paymentForm">
-        <label for="transactionId">UPI transaction ID / UTR</label>
-        <input id="transactionId" required maxlength="100"
-          placeholder="Enter transaction reference">
+        <div class="floating-card card-one">
+          <span class="floating-icon">✦</span>
+          <div><strong>Learn new skills</strong><small>Courses & tutorials</small></div>
+        </div>
 
-        <button class="btn btn-primary full" type="submit">
-          Submit Payment Details
-        </button>
+        <div class="floating-card card-two">
+          <span class="floating-icon">◈</span>
+          <div><strong>Creative tools</strong><small>Made for creators</small></div>
+        </div>
+
+        <div class="hero-glass-card">
+          <div class="glass-top"><span>QUICKSERVE</span><span>✧</span></div>
+          <div class="glass-symbol">Q</div>
+          <h3>Your next idea starts here.</h3>
+          <p>Create · Learn · Grow</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="stats-grid">
+      <div class="stat-card"><span>✦</span><strong>Creative</strong><small>Design services</small></div>
+      <div class="stat-card"><span>◈</span><strong>Practical</strong><small>Learning courses</small></div>
+      <div class="stat-card"><span>⚒</span><strong>Useful</strong><small>Creator tools</small></div>
+      <div class="stat-card"><span>↗</span><strong>Simple</strong><small>One platform</small></div>
+    </section>
+
+    <section class="content-section" id="services">
+      <div class="section-heading">
+        <div>
+          <span class="section-kicker">WHAT WE OFFER</span>
+          <h2>Creative services</h2>
+          <p>Professional digital services for your ideas and projects.</p>
+        </div>
+        <a href="#serviceGrid" class="text-link">Explore services ↗</a>
+      </div>
+
+      <div class="service-grid" id="serviceGrid">
+
+        <a class="service-card" href="#orderSection" data-service="Social Media Posts">
+          <span class="service-icon">✧</span>
+          <h3>Social Media Posts</h3>
+          <p>Creative posts for your brand and social pages.</p>
+          <strong>Starting ₹99 ↗</strong>
+        </a>
+
+        <a class="service-card" href="#orderSection" data-service="Banners & Posters">
+          <span class="service-icon">▧</span>
+          <h3>Banners & Posters</h3>
+          <p>Professional promotional graphics.</p>
+          <strong>Starting ₹199 ↗</strong>
+        </a>
+
+        <a class="service-card" href="#orderSection" data-service="YouTube Thumbnails">
+          <span class="service-icon">▷</span>
+          <h3>YouTube Thumbnails</h3>
+          <p>Eye-catching thumbnail designs.</p>
+          <strong>Starting ₹149 ↗</strong>
+        </a>
+
+        <a class="service-card" href="#orderSection" data-service="Resume Maker">
+          <span class="service-icon">▤</span>
+          <h3>Resume Maker</h3>
+          <p>Clean and professional resume designs.</p>
+          <strong>Starting ₹149 ↗</strong>
+        </a>
+
+        <a class="service-card" href="#orderSection" data-service="QR Code Maker">
+          <span class="service-icon">▦</span>
+          <h3>QR Code Maker</h3>
+          <p>Useful QR designs for your needs.</p>
+          <strong>Starting ₹49 ↗</strong>
+        </a>
+
+        <a class="service-card" href="#orderSection" data-service="Digital Visiting Card">
+          <span class="service-icon">▣</span>
+          <h3>Digital Visiting Card</h3>
+          <p>Modern digital business cards.</p>
+          <strong>Starting ₹99 ↗</strong>
+        </a>
+
+        <a class="service-card" href="#orderSection" data-service="Invoice Maker">
+          <span class="service-icon">▧</span>
+          <h3>Invoice Maker</h3>
+          <p>Professional invoice design and setup.</p>
+          <strong>Starting ₹99 ↗</strong>
+        </a>
+
+        <a class="service-card" href="#orderSection" data-service="Website Design">
+          <span class="service-icon">⌘</span>
+          <h3>Website Design</h3>
+          <p>Modern websites for your business.</p>
+          <strong>Starting ₹999 ↗</strong>
+        </a>
+
+      </div>
+    </section>
+
+    <section class="learning-banner">
+      <div>
+        <span class="section-kicker">QUICKSERVE ACADEMY</span>
+        <h2>Turn curiosity into skills.</h2>
+        <p>Start with our free UI/UX beginner course or explore premium courses.</p>
+        <a href="discover.html" class="btn btn-primary">Discover courses ↗</a>
+      </div>
+      <div class="banner-art"><span>Q</span><i>✦</i><b>◈</b></div>
+    </section>
+
+    <section class="content-section" id="howItWorks">
+      <div class="section-heading">
+        <div>
+          <span class="section-kicker">SIMPLE PROCESS</span>
+          <h2>How it works</h2>
+          <p>Get started in three simple steps.</p>
+        </div>
+      </div>
+
+      <div class="steps-grid">
+        <div class="step-card"><span>01</span><h3>Explore</h3><p>Discover services, tools and courses.</p></div>
+        <div class="step-card"><span>02</span><h3>Choose</h3><p>Select what fits your needs and budget.</p></div>
+        <div class="step-card"><span>03</span><h3>Get started</h3><p>Place an order or begin learning.</p></div>
+      </div>
+    </section>
+
+    <section class="content-section order-section" id="orderSection">
+      <div class="section-heading">
+        <div>
+          <span class="section-kicker">LET'S WORK TOGETHER</span>
+          <h2>Place your order</h2>
+          <p>Tell us what you need. Our team can review your request.</p>
+        </div>
+      </div>
+
+      <form id="orderForm" class="order-form">
+        <div class="form-row">
+          <label>Your name
+            <input type="text" id="customerName" placeholder="Enter your name" required>
+          </label>
+          <label>Email address
+            <input type="email" id="customerEmail" placeholder="Enter your email" required>
+          </label>
+        </div>
+
+        <div class="form-row">
+          <label>Select service
+            <select id="serviceSelect" required>
+              <option value="">Choose a service</option>
+              <option>Social Media Posts</option>
+              <option>Banners & Posters</option>
+              <option>YouTube Thumbnails</option>
+              <option>Resume Maker</option>
+              <option>QR Code Maker</option>
+              <option>Digital Visiting Card</option>
+              <option>Invoice Maker</option>
+              <option>Website Design</option>
+            </select>
+          </label>
+
+          <label>Choose design style
+            <select id="styleSelect" required>
+              <option value="">Choose a style</option>
+              <option>Neon Glow</option>
+              <option>Luxury Dark</option>
+              <option>Modern Blue</option>
+              <option>Purple Gradient</option>
+              <option>Minimal Clean</option>
+              <option>Bold Creative</option>
+            </select>
+          </label>
+        </div>
+
+        <label>Describe your requirements
+          <textarea id="orderDetails" rows="5" placeholder="Tell us what you need..."></textarea>
+        </label>
+
+        <button type="submit" class="btn btn-primary form-submit">Continue to order ↗</button>
+        <p id="orderMessage" class="form-message" aria-live="polite"></p>
       </form>
+    </section>
 
-      <p class="small-note">
-        Payment is subject to manual admin verification. Submitting a transaction ID does not itself confirm payment.
-      </p>
-    </div>
-  </section>
+    <footer class="footer">
+      <a class="brand" href="index.html">
+        <span class="brand-icon">Q</span>
+        <span>Quick<span class="brand-accent">Serve</span></span>
+      </a>
+      <p>Creative services, useful tools and practical learning.</p>
+      <div class="footer-links">
+        <a href="discover.html">Discover</a>
+        <a href="blogs.html">Blogs</a>
+        <a href="contact.html">Contact</a>
+        <a href="profile.html">Profile</a>
+      </div>
+      <small>© <span id="footerYear"></span> QuickServe. All rights reserved.</small>
+    </footer>
 
-  <section id="myOrders" class="section">
-    <div class="section-heading">
-      <span class="eyebrow">YOUR ACCOUNT</span>
-      <h2>My orders</h2>
-      <p id="accountMessage">Sign in to view your orders.</p>
-    </div>
-    <div id="ordersList" class="orders-list"></div>
-  </section>
-
-  <section id="adminPanel" class="section hidden">
-    <div class="section-heading">
-      <span class="eyebrow">ADMIN AREA</span>
-      <h2>Order management</h2>
-      <p>Review payment submissions and update delivery status.</p>
-    </div>
-    <div id="adminOrders" class="admin-orders"></div>
-  </section>
-</main>
-
-<footer>
-  <a class="logo" href="#">Quick<span>Serve</span><b>.</b></a>
-  <p>Creative services made simple.</p>
-  <small>© <span id="year"></span> QuickServe. All rights reserved.</small>
-</footer>
-
-<div id="toast" class="toast"></div>
+  </main>
+</div>
 
 <script type="module" src="app.js"></script>
 </body>
-</html>
+          </html>
+          
